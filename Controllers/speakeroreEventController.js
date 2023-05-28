@@ -1,4 +1,15 @@
 import speakeroreEventModel from "../Models/speakeroreEvents.js";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import nodemailer from "nodemailer";
+let fileName = fileURLToPath(import.meta.url);
+let __dirname = dirname(fileName);
+let breakIndex = __dirname.lastIndexOf("\\") + 1;
+let result = __dirname.substring(0, breakIndex);
+
+dotenv.config({ path: `${result}config.env` });
 
 export const createSpeakeroreEvent = async (req, res) => {
   try {
@@ -204,7 +215,7 @@ export const getAllArchivedEvent = async (req, res) => {
     const totalPages = Math.ceil(totalCount / limit);
 
     const savedEvents = await speakeroreEventModel
-      .find({isDeleted: false, isArchived: true })
+      .find({ isDeleted: false, isArchived: true })
       .skip((page - 1) * limit)
       .limit(limit);
 
@@ -239,7 +250,7 @@ export const getAllDeletedEvent = async (req, res) => {
     const totalPages = Math.ceil(totalCount / limit);
 
     const savedEvents = await speakeroreEventModel
-      .find({isDeleted: true, isArchived: false })
+      .find({ isDeleted: true, isArchived: false })
       .skip((page - 1) * limit)
       .limit(limit);
 
@@ -444,6 +455,127 @@ export const getEventsBySpeakeroreExclusive = async (req, res) => {
       totalPages: totalPages,
       currentPage: page,
     });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const makeEventApproved = async (req, res) => {
+  try {
+    const { eventId } = req.body;
+
+    if (!eventId) {
+      return res.status(422).json({
+        status: false,
+        message: "event id is not givent to approve event",
+      });
+    }
+
+    const approveEventResponse = await speakeroreEventModel.updateOne(
+      { _id: eventId },
+      { $set: { isApprove: true } }
+    );
+
+    if (approveEventResponse.acknowledged) {
+      const savedEvent = await speakeroreEventModel.findOne({ _id: eventId });
+
+      const userEvent = savedEvent.User.email;
+
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: "jarvis9960@gmail.com",
+          pass: process.env.GMAILAPPPASSWORD,
+        },
+      });
+
+      let info = await transporter.sendMail({
+        from: "jarvis9960@gmail.com", // sender address
+        to: userEvent, // list of receivers
+        subject: "Your event is approved", // Subject line
+        // text: "", // plain text body
+        html: `<p>congratulations, your event is approved</P>`, // html body
+      });
+
+      if (
+        info.accepted[0] === userEvent &&
+        approveEventResponse.acknowledged === true
+      ) {
+        return res
+          .status(201)
+          .json({ status: true, Message: "Event has been approved" });
+      } else {
+        return res
+          .status(201)
+          .json({ status: true, Message: "Event has been approved" });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const makeEventDecline = async (req, res) => {
+  try {
+    const { eventId, feedback } = req.body;
+
+    if (!eventId || !feedback) {
+      return res.status(422).json({
+        status: false,
+        message: "Please provide eventId and feedback to decline the event",
+      });
+    }
+
+    const declineEventResponse = await speakeroreEventModel.updateOne(
+      { _id: eventId },
+      { $set: { isDeleted: true } }
+    );
+
+    if (declineEventResponse.acknowledged) {
+      const savedEvent = await speakeroreEventModel.findOne({ _id: eventId });
+
+      const userEvent = savedEvent.User.email;
+
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: "jarvis9960@gmail.com",
+          pass: process.env.GMAILAPPPASSWORD,
+        },
+      });
+
+      let info = await transporter.sendMail({
+        from: "jarvis9960@gmail.com", // sender address
+        to: userEvent, // list of receivers
+        subject: "Your event is approved", // Subject line
+        // text: "", // plain text body
+        html: `<p>congratulations, your event is approved</P>`, // html body
+      });
+
+      if (
+        info.accepted[0] === userEvent &&
+        declineEventResponse.acknowledged === true
+      ) {
+        return res
+          .status(201)
+          .json({ status: true, Message: "Event has been approved" });
+      } else {
+        return res
+          .status(201)
+          .json({ status: true, Message: "Event has been approved" });
+      }
+    }
   } catch (error) {
     return res
       .status(500)
