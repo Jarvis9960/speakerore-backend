@@ -10,6 +10,7 @@ import {
   getEventsByCategorys,
   getEventsByDate,
   getEventsBySpeakeroreExclusive,
+  makeEventApproved,
 } from "../Controllers/speakeroreEventController.js";
 import { protectedRoute } from "../Middlewares/protectedMiddleware.js";
 
@@ -22,5 +23,6 @@ router.get("/geteventsbymodes", getEventsByModes);
 router.get("/geteventsbycategories", getEventsByCategorys);
 router.get("/geteventbystartdate", getEventsByDate);
 router.get("/getspeakeroreexclusiveevent", getEventsBySpeakeroreExclusive);
+router.patch("/makeeventapprove", protectedRoute, makeEventApproved)
 
 export default router;
