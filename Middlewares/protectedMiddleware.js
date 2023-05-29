@@ -1,6 +1,5 @@
 export const protectedRoute = (req, res, next) => {
-  console.log(req.isAuthenticated())
-  if (req.user) {
+  if (req.isAuthenticated()) {
     return next();
   }
 

@@ -11,10 +11,12 @@ import {
   getEventsByDate,
   getEventsBySpeakeroreExclusive,
   makeEventApproved,
+  getSingleEventById,
 } from "../Controllers/speakeroreEventController.js";
 import { protectedRoute } from "../Middlewares/protectedMiddleware.js";
 
 router.post("/createEvent", createSpeakeroreEvent);
+router.get("/getsingleevent/:eventId", getSingleEventById)
 router.get("/getallaprovedevent", getAllApprovedEvents);
 router.get("/getallarchievedevent", getAllArchivedEvent);
 router.get("/getalldeletedevent", getAllDeletedEvent);
