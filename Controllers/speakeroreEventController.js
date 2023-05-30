@@ -650,3 +650,5 @@ export const getEventsForParticularUser = async (req, res) => {
       .json({ status: false, message: "something went wrong", err: error });
   }
 };
+
+

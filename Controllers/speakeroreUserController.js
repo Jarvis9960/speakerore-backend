@@ -68,3 +68,89 @@ export const getAllTeamMembers = async (req, res) => {
       .json({ status: false, message: "something went wrong", err: error });
   }
 };
+
+export const makeUserToTeamMember = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(422).json({
+        status: false,
+        message: "No userid is giving to make team member",
+      });
+    }
+
+    const updateUserToMemberResponse = await UserModel.updateOne(
+      { _id: userId },
+      { $set: { role: "Team-member" } }
+    );
+
+    if (updateUserToMemberResponse.acknowledged) {
+      return res.status(201).json({
+        status: true,
+        message: "User have successfully made a team member",
+      });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const makeRegularUser = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(422).json({
+        status: false,
+        message: "team member id is not given to make user",
+      });
+    }
+
+    const updateTeamMemberToUser = await UserModel.updateOne(
+      { _id: userId },
+      { $set: { role: "Regular-user" } }
+    );
+
+    if (updateTeamMemberToUser.acknowledged) {
+      return res.status(201).json({
+        status: true,
+        message: "Team member has been made regular user successfully",
+      });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const makeTeamMemberToAdmin = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(422).json({
+        status: false,
+        message: "team member id is not given to make admin",
+      });
+    }
+
+    const updateToAdminResponse = await UserModel.updateOne(
+      { _id: userId },
+      { $set: { role: "admin" } }
+    );
+
+    if (updateToAdminResponse.acknowledged) {
+      return res
+        .status(201)
+        .json({ status: true, message: "team member has now became admin" });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
