@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import nodemailer from "nodemailer";
+import cron from "node-cron";
 let fileName = fileURLToPath(import.meta.url);
 let __dirname = dirname(fileName);
 let breakIndex = __dirname.lastIndexOf("\\") + 1;
@@ -311,6 +312,12 @@ export const getEventsByModes = async (req, res) => {
     const limit = 9;
     const page = req.query.page || 1;
 
+    if (!mode) {
+      return res
+        .status(422)
+        .json({ status: false, message: "mode is not given for query" });
+    }
+
     const totalCount = speakeroreEventModel
       .find({
         Mode: mode,
@@ -357,6 +364,12 @@ export const getEventsByCategorys = async (req, res) => {
     const limit = 9;
     const page = req.query.page || 1;
 
+    if (!category) {
+      return res
+        .status(422)
+        .json({ status: false, message: "category is not given for query" });
+    }
+
     const totalCount = speakeroreEventModel
       .find({
         Category: category,
@@ -400,27 +413,41 @@ export const getEventsByCategorys = async (req, res) => {
 
 export const getEventsByDate = async (req, res) => {
   try {
-    const { Date } = req.query;
+    const { date } = req.query;
     const limit = 9;
     const page = req.query.page || 1;
 
-    const targetDate = new Date(Date);
+    if (!date) {
+      return res
+        .status(422)
+        .json({ status: false, message: "Date is not given for query" });
+    }
+
+    const targetDate = new Date(date);
+    const startDate = new Date(
+      targetDate.getFullYear(),
+      targetDate.getMonth(),
+      targetDate.getDate()
+    );
+    const endDate = new Date(
+      targetDate.getFullYear(),
+      targetDate.getMonth(),
+      targetDate.getDate() + 1
+    );
+
+    console.log(startDate);
+    console.log(endDate);
+
     const totalCount = speakeroreEventModel
       .find({
-        EventStartDateAndTime: targetDate,
-        isApprove: true,
-        isArchived: false,
-        isDeleted: false,
+        EventStartDateAndTime: { $gte: startDate, $lt: endDate },
       })
-      .countDocuments({});
+      .countDocuments();
     const totalPages = Math.ceil(totalCount / limit);
 
     const savedEventByDate = await speakeroreEventModel
       .find({
-        EventStartDateAndTime: targetDate,
-        isApprove: true,
-        isArchived: false,
-        isDeleted: false,
+        EventStartDateAndTime: { $gte: startDate, $lt: endDate },
       })
       .skip((page - 1) * limit)
       .limit(limit);
@@ -428,18 +455,19 @@ export const getEventsByDate = async (req, res) => {
     if (savedEventByDate.length < 1) {
       return res.status(404).json({
         status: true,
-        message: `No data is present of ${Date} category in database`,
+        message: `No data is present of ${date} category in database`,
       });
     }
 
     return res.status(202).json({
-      status: false,
-      message: `successfully fetched ${Date} category data`,
+      status: true,
+      message: `successfully fetched ${targetDate} category data`,
       savedEventByDate: savedEventByDate,
       totalPages: totalPages,
       currentPage: page,
     });
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
       .json({ status: false, message: "something went wrong", err: error });
@@ -451,6 +479,12 @@ export const getEventsBySpeakeroreExclusive = async (req, res) => {
     const { speakeroreExclusive } = req.query;
     const limit = 9;
     const page = req.query.page || 1;
+
+    if (!speakeroreExclusive) {
+      return res
+        .status(422)
+        .json({ status: false, message: "speakerExclusive is undefined" });
+    }
 
     const totalCount = await speakeroreEventModel
       .find({
@@ -651,4 +685,26 @@ export const getEventsForParticularUser = async (req, res) => {
   }
 };
 
+cron.schedule("*/5 * * * * *", () => {
+  (async function () {
+    const currentDate = new Date();
 
+    const eventThatAreEnd = await speakeroreEventModel.find({
+      EventEndDateAndTime: { $lt: currentDate },
+      isArchived: false,
+    });
+
+    const eventId = eventThatAreEnd.map((currEvent) => {
+      return currEvent._id;
+    });
+
+    const makeEventArchived = await speakeroreEventModel.updateMany(
+      { _id: { $in: eventId } },
+      { $set: { isArchived: true } }
+    );
+
+    if (makeEventArchived.acknowledged) {
+      console.log(`${eventThatAreEnd.length} events are archived`);
+    }
+  });
+});
