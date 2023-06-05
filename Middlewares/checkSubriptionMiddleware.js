@@ -28,6 +28,19 @@ export const checkSubcription = async (req, res, next) => {
         });
       }
 
+      let currentDate = new Date();
+      if (checkSubcriptionIsActive.EndDate > currentDate) {
+        const updateSubcription = await subcriptionModel.updateOne(
+          { _id: loggedUser.subcription },
+          { $set: { Active: false } }
+        );
+
+        return res.status(401).json({
+          status: false,
+          message: "User Subcription is ended. Please renew your subcription",
+        });
+      }
+
       if (checkSubcriptionIsActive.Active) {
         next();
       } else {

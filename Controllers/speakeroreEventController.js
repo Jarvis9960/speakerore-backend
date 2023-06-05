@@ -271,6 +271,7 @@ export const getAllArchivedEvent = async (req, res) => {
   }
 };
 
+
 export const getEventsByModes = async (req, res) => {
   try {
     const { mode } = req.query;
