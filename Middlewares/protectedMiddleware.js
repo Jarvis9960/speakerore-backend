@@ -33,7 +33,7 @@ export const protectedRouteOfTeamMember = async (req, res, next) => {
       return res.status(401).json({ status: false, message: "Unauthorized" });
     }
 
-    if (savedUser.role === "Team-member") {
+    if (savedUser.role === "Team-member" || savedUser.role === "admin") {
       return next();
     } else {
       res.status(401).json({ error: "Only team-member can access this page" });

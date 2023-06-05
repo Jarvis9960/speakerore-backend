@@ -8,13 +8,29 @@ import {
   makeTeamMemberToAdmin,
   makeUserToTeamMember,
 } from "../Controllers/speakeroreUserController.js";
-import { protectedRoute } from "../Middlewares/protectedMiddleware.js";
+import {
+  protectedRoute,
+  protectedRouteOfAdmin,
+} from "../Middlewares/protectedMiddleware.js";
 
-router.get("/getallregularuser", protectedRoute, getAllRegularUser);
-router.get("/getallteammembers", protectedRoute, getAllTeamMembers);
-router.patch("/makeusertoteammember", protectedRoute, makeUserToTeamMember);
-router.patch("/maketeammembertouser", protectedRoute, makeRegularUser);
-router.patch("/maketeammembertoadmin", protectedRoute, makeTeamMemberToAdmin);
-router.patch("/blockregularuser", protectedRoute, blockRegularUser);
+// getting all user for admin
+router.get("/getallregularuser", protectedRouteOfAdmin, getAllRegularUser);
+router.get("/getallteammembers", protectedRouteOfAdmin, getAllTeamMembers);
+router.patch(
+  "/makeusertoteammember",
+  protectedRouteOfAdmin,
+  makeUserToTeamMember
+);
+router.patch("/maketeammembertouser", protectedRouteOfAdmin, makeRegularUser);
+router.patch(
+  "/maketeammembertoadmin",
+  protectedRouteOfAdmin,
+  makeTeamMemberToAdmin
+);
+router.patch("/blockregularuser", protectedRouteOfAdmin, blockRegularUser);
+
+
+// getting profile for current user
+router.get("/getprofile", protectedRoute)
 
 export default router;

@@ -271,41 +271,6 @@ export const getAllArchivedEvent = async (req, res) => {
   }
 };
 
-export const getAllDeletedEvent = async (req, res) => {
-  try {
-    const page = req.query.page || 1;
-    const limit = 9;
-
-    const totalCount = await speakeroreEventModel
-      .find({ isDeleted: true, isArchived: false })
-      .countDocuments({});
-    const totalPages = Math.ceil(totalCount / limit);
-
-    const savedEvents = await speakeroreEventModel
-      .find({ isDeleted: true, isArchived: false })
-      .skip((page - 1) * limit)
-      .limit(limit);
-
-    if (savedEvents.length < 1) {
-      return res
-        .status(404)
-        .json({ status: true, message: "no data found in the database" });
-    }
-
-    return res.status(202).json({
-      status: true,
-      message: "Events successfully fetched",
-      savedEvents: savedEvents,
-      totalPages: totalPages,
-      currentPage: page,
-    });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ status: false, message: "something went wrong", err: error });
-  }
-};
-
 export const getEventsByModes = async (req, res) => {
   try {
     const { mode } = req.query;
@@ -685,6 +650,7 @@ export const getEventsForParticularUser = async (req, res) => {
   }
 };
 
+// Scheduler that check event is over and then archived
 cron.schedule("*/5 * * * * *", () => {
   (async function () {
     const currentDate = new Date();
@@ -708,3 +674,110 @@ cron.schedule("*/5 * * * * *", () => {
     }
   });
 });
+
+// get event user has published
+
+export const getEventUserHasPublished = async (req, res) => {
+  try {
+    const page = req.query.page || 1;
+    const limit = 9;
+    const totalCount = await speakeroreEventModel
+      .find({
+        "User._id": req.user._id,
+      })
+      .countDocuments();
+    const totalPage = Math.ceil(totalCount / limit);
+
+    const savedEventsOfCurrentUser = await speakeroreEventModel
+      .find({
+        "User._id": req.user._id,
+      })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    if (savedEventsOfCurrentUser.length < 1) {
+      return res.status(404).json({
+        status: false,
+        message: "No Events are published by the user",
+      });
+    }
+
+    return res.status(202).json({
+      status: true,
+      message: "successfull fetched event of the user",
+      savedEventsOfCurrentUser: savedEventsOfCurrentUser,
+      totalPage: totalPage,
+      currentPage: page,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+// get all trash events
+
+export const getAllTrashEvent = async (req, res) => {
+  try {
+    const page = req.query.page || 1;
+    const limit = 9;
+    const totalCount = await speakeroreEventModel
+      .find({ isDeleted: true })
+      .countDocuments();
+    const totalPage = Math.ceil(totalCount / limit);
+
+    const deletedEvents = await speakeroreEventModel
+      .find({ isDeleted: true })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    if (deletedEvents.length < 1) {
+      return res
+        .status(404)
+        .json({ status: true, message: "No deleted Events are present" });
+    }
+
+    return res.status(201).json({
+      status: true,
+      message: "successfully fetched deleted events",
+      deletedEvents: deletedEvents,
+      totalPage: totalPage,
+      currentPage: page,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const deleteEvent = async (req, res) => {
+  try {
+    const { eventId } = req.body;
+
+    if (!eventId) {
+      return res
+        .status(422)
+        .json({ status: false, message: "Please provide eventID to delete" });
+    }
+
+    const deleteEventResponse = await speakeroreEventModel.updateOne(
+      { _id: eventId },
+      { $set: { isDeleted: true } }
+    );
+
+    if (deleteEventResponse.acknowledged) {
+      return res
+        .status(201)
+        .json({
+          status: true,
+          message: "Event successfully declined and moved to trash",
+        });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};

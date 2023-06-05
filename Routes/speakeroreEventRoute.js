@@ -4,7 +4,7 @@ import {
   createSpeakeroreEvent,
   getAllApprovedEvents,
   getAllArchivedEvent,
-  getAllDeletedEvent,
+  getAllTrashEvent,
   getAllEventsforApproval,
   getEventsByModes,
   getEventsByCategorys,
@@ -13,21 +13,75 @@ import {
   makeEventApproved,
   getSingleEventById,
   makeEventDecline,
+  getEventUserHasPublished,
+  deleteEvent,
 } from "../Controllers/speakeroreEventController.js";
-import { protectedRoute } from "../Middlewares/protectedMiddleware.js";
+import {
+  protectedRoute,
+  protectedRouteOfAdmin,
+  protectedRouteOfTeamMember,
+} from "../Middlewares/protectedMiddleware.js";
+import { checkSubcription } from "../Middlewares/checkSubriptionMiddleware.js";
 
-router.post("/createEvent", createSpeakeroreEvent);
-router.get("/getsingleevent/:eventId", getSingleEventById);
-router.get("/getallaprovedevent", getAllApprovedEvents);
-router.get("/getallarchievedevent", getAllArchivedEvent);
-router.get("/getalldeletedevent", getAllDeletedEvent);
-router.get("/geteventforapproval", getAllEventsforApproval);
-router.get("/geteventsbymodes", getEventsByModes);
-router.get("/geteventsbycategories", getEventsByCategorys);
-router.get("/geteventbystartdate", getEventsByDate);
-router.get("/getspeakeroreexclusiveevent", getEventsBySpeakeroreExclusive);
-router.patch("/makeeventapprove", protectedRoute, makeEventApproved);
-router.patch("/makeeventdecline", protectedRoute, makeEventDecline);
+// creating events
+router.post("/createEvent", protectedRoute, createSpeakeroreEvent);
 
+// getting all event for regular user
+router.get(
+  "/getsingleevent/:eventId",
+  protectedRoute,
+  checkSubcription,
+  getSingleEventById
+);
+router.get(
+  "/getallapprovedevent",
+  protectedRoute,
+  checkSubcription,
+  getAllApprovedEvents
+);
+router.get(
+  "/geteventsbymodes",
+  protectedRoute,
+  checkSubcription,
+  getEventsByModes
+);
+router.get(
+  "/geteventsbycategories",
+  protectedRoute,
+  checkSubcription,
+  getEventsByCategorys
+);
+router.get(
+  "/geteventbystartdate",
+  protectedRoute,
+  checkSubcription,
+  getEventsByDate
+);
+router.get(
+  "/getspeakeroreexclusiveevent",
+  protectedRoute,
+  checkSubcription,
+  getEventsBySpeakeroreExclusive
+);
+router.get("/geteventforcurrentuser", protectedRoute, getEventUserHasPublished);
+
+// getting all events for admin and modify
+router.patch("/makeeventapprove", protectedRouteOfAdmin, makeEventApproved);
+router.patch("/makeeventdecline", protectedRouteOfAdmin, makeEventDecline);
+router.get(
+  "/geteventforapproval",
+  protectedRouteOfAdmin,
+  getAllEventsforApproval
+);
+router.get("/getalltrashevents", protectedRouteOfAdmin, getAllTrashEvent);
+router.patch("/makeeventdelete", protectedRouteOfAdmin, deleteEvent);
+
+
+// getting all events for team member
+router.get(
+  "/getallarchievedevent",
+  protectedRouteOfTeamMember,
+  getAllArchivedEvent
+);
 
 export default router;

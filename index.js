@@ -10,6 +10,7 @@ import googleAuthRoutes from "./Routes/googleAuthRoute.js";
 import UserModel from "./Models/UserModel.js";
 import SpeakeroreCategoryRoute from "./Routes/speakeroreCategoryRoute.js";
 import SpeakeroreEventRoute from "./Routes/speakeroreEventRoute.js";
+import SpeakerorePaymentRoute from "./Routes/speakerorePaymentRoute.js"
 
 // configure for dotenv file
 dotenv.config({ path: path.resolve("./config.env") });
@@ -19,7 +20,11 @@ const app = express();
 // middlewares for app
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
+
 // configuring session middleware
 app.use(
   session({
@@ -137,6 +142,7 @@ passport.deserializeUser(async (id, done) => {
 app.use("/api", googleAuthRoutes);
 app.use("/api", SpeakeroreCategoryRoute);
 app.use("/api", SpeakeroreEventRoute);
+app.use("/api", SpeakerorePaymentRoute);
 
 // function to make connection to database
 connectDB()

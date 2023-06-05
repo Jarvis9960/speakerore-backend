@@ -26,6 +26,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "Regular-user",
   },
+  subcription: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Subcription"
+  },
   blocked: {
     type: Boolean,
     default: false,
