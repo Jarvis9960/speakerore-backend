@@ -214,3 +214,30 @@ export const blockRegularUser = async (req, res) => {
       .json({ status: false, message: "something went wrong", err: error });
   }
 };
+
+export const getProfileForCurrentUser = async (req, res) => {
+  try {
+    const currentUserId = req.user._id;
+
+    const savedUser = await UserModel.findById(currentUserId).select(
+      "-googleId",
+      "-blocked"
+    );
+
+    if (!savedUser) {
+      return res.status(422).json({ status: false, message: "Invalid Id" });
+    }
+
+    return res
+      .status(202)
+      .json({
+        status: true,
+        message: "successfully fetched single user profile",
+        response: savedUser,
+      });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
