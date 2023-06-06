@@ -1,3 +1,4 @@
+import UserModel from "../Models/UserModel.js";
 import Coupon from "../Models/speakeroreCoupon.js";
 
 export const createCoupon = async (req, res) => {
@@ -57,6 +58,60 @@ export const createCoupon = async (req, res) => {
   }
 };
 
+export const createAffilateCoupon = async (req, res) => {
+  try {
+    const email = req.user.email;
+
+    if (!email) {
+      return res
+        .status(422)
+        .json({ status: false, message: "Logged user doesn't have email" });
+    }
+
+    const UserIsSubcribedorNot = await UserModel.findOne({ email: email });
+
+    if (UserIsSubcribedorNot.subcription) {
+      const createAffilateCoupon = new Coupon({
+        coupon_code: UserIsSubcribedorNot.alphaUnqiueId,
+        subscription_type: "Affilate",
+        discount: 10,
+        isActive: true,
+        isAffilate: true,
+      });
+
+      const savedCoupon = await createAffilateCoupon.save();
+
+      if (savedCoupon) {
+        return res.status(201).json({
+          status: true,
+          message: "Affilate coupon successfully created",
+        });
+      }
+    } else {
+      const createAffilateCoupon = new Coupon({
+        coupon_code: UserIsSubcribedorNot.alphaUnqiueId,
+        subscription_type: "Affilate",
+        discount: 5,
+        isActive: true,
+        isAffilate: true,
+      });
+
+      const savedCoupon = await createAffilateCoupon.save();
+
+      if (savedCoupon) {
+        return res.status(201).json({
+          status: true,
+          message: "Affilate coupon successfully created",
+        });
+      }
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
 export const getAllCoupon = async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -89,6 +144,34 @@ export const getAllCoupon = async (req, res) => {
   }
 };
 
+export const getCouponOfCurrentUserAffilate = async (req, res) => {
+  try {
+    const email = req.user.email;
+
+    const existUser = await UserModel.findOne({ email: email });
+
+    const affilateCoupon = await Coupon.findOne({
+      coupon_code: existUser.alphaUnqiueId,
+    });
+
+    if (!affilateCoupon) {
+      return res
+        .status(404)
+        .json({ status: true, message: "Affilate coupon did not created" });
+    }
+
+    return res.status(202).json({
+      status: true,
+      message: "Here your affilate coupon",
+      affilateCoupon: affilateCoupon,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
 export const applyCouponCode = async (req, res) => {
   try {
     const { couponCode, amount, subcriptionType } = req.query;
@@ -109,47 +192,73 @@ export const applyCouponCode = async (req, res) => {
         .json({ status: false, message: "Code is not valid" });
     }
 
-    if (subcriptionType !== coupon_codeExists.subscription_type) {
-      return res.status(422).json({
+    const checkAffilateCoupon = await UserModel.findOne({
+      alphaUnqiueId: coupon_codeExists.coupon_code,
+    }).populate("subcription");
+
+    if (checkAffilateCoupon.subcription.Active) {
+      if (!coupon_codeExists.isActive) {
+        return res
+          .status(422)
+          .json({ status: false, message: "Coupon code is not active" });
+      }
+
+      // Discount amount = Original price × (Discount percentage / 100)
+      let calculateDiscountAmount = amount * (coupon_codeExists.discount / 100);
+
+      // Final price = Original price - Discount amount = $100 - $20 = $80
+      let finalPrice = amount - calculateDiscountAmount;
+
+      return res.status(201).json({
         status: false,
-        message: `This code is valid for only ${coupon_codeExists.subscription_type} subscription`,
+        message: "successfully done coupon validation",
+        finalPrice: finalPrice,
+        discount: coupon_codeExists.discount,
+        code: coupon_codeExists.coupon_code,
+      });
+    } else {
+      if (subcriptionType !== coupon_codeExists.subscription_type) {
+        return res.status(422).json({
+          status: false,
+          message: `This code is valid for only ${coupon_codeExists.subscription_type} subscription`,
+        });
+      }
+
+      const currentDate = new Date();
+
+      if (currentDate > coupon_codeExists.expiration_date) {
+        return res
+          .status(422)
+          .json({ status: false, message: "Coupon code is expired" });
+      }
+
+      if (coupon_codeExists.usage_count > coupon_codeExists.max_usages) {
+        return res.status(422).json({
+          status: false,
+          message: "Coupon code has been used till its limit",
+        });
+      }
+
+      if (!coupon_codeExists.isActive) {
+        return res
+          .status(422)
+          .json({ status: false, message: "Coupon code is not active" });
+      }
+
+      // Discount amount = Original price × (Discount percentage / 100)
+      let calculateDiscountAmount = amount * (coupon_codeExists.discount / 100);
+
+      // Final price = Original price - Discount amount = $100 - $20 = $80
+      let finalPrice = amount - calculateDiscountAmount;
+
+      return res.status(201).json({
+        status: false,
+        message: "successfully done coupon validation",
+        finalPrice: finalPrice,
+        discount: coupon_codeExists.discount,
+        code: coupon_codeExists.coupon_code,
       });
     }
-
-    const currentDate = new Date();
-
-    if (currentDate > coupon_codeExists.expiration_date) {
-      return res
-        .status(422)
-        .json({ status: false, message: "Coupon code is expired" });
-    }
-
-    if (coupon_codeExists.usage_count > coupon_codeExists.max_usages) {
-      return res.status(422).json({
-        status: false,
-        message: "Coupon code has been used till its limit",
-      });
-    }
-
-    if (!coupon_codeExists.isActive) {
-      return res
-        .status(422)
-        .json({ status: false, message: "Coupon code is not active" });
-    }
-
-    // Discount amount = Original price × (Discount percentage / 100)
-    let calculateDiscountAmount = amount * (coupon_codeExists.discount / 100);
-
-    // Final price = Original price - Discount amount = $100 - $20 = $80
-    let finalPrice = amount - calculateDiscountAmount;
-
-    return res.status(201).json({
-      status: false,
-      message: "successfully done coupon validation",
-      finalPrice: finalPrice,
-      discount: coupon_codeExists.discount,
-      code: coupon_codeExists.coupon_code,
-    });
   } catch (error) {
     return res
       .status(500)
