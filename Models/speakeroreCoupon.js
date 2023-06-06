@@ -17,7 +17,6 @@ const couponSchema = new mongoose.Schema({
   },
   expiration_date: {
     type: Date,
-    required: true,
   },
   usage_count: {
     type: Number,
@@ -31,6 +30,10 @@ const couponSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  isAffilate: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const Coupon = mongoose.model("Coupon", couponSchema);
