@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import subcriptionModel from "../Models/speakeroreSubcription.js";
 import UserModel from "../Models/UserModel.js";
+import Coupon from "../Models/speakeroreCoupon.js";
 let fileName = fileURLToPath(import.meta.url);
 let __dirname = dirname(fileName);
 let breakIndex = __dirname.lastIndexOf("\\") + 1;
@@ -75,6 +76,13 @@ export const paymentVerification = async (req, res) => {
         endDate.setMonth(startDate.getMonth() + 12);
       }
 
+      if (couponCode !== "No Coupon Code") {
+        const updateCouponUsage = await Coupon.updateOne(
+          { coupon_code: couponCode },
+          { $inc: { usage_count: 1 } }
+        );
+      }
+
       const newSubcription = new subcriptionModel({
         User: req.user._id,
         Subcription_Type: subscriptionType,
@@ -94,15 +102,15 @@ export const paymentVerification = async (req, res) => {
           { $set: { subcription: savedSubcription._id } }
         );
 
-        if(updateUserMode.acknowledged){
-            res.status(201).json({status: true, message: "Payment Done"})
+        if (updateUserMode.acknowledged) {
+          res.status(201).json({ status: true, message: "Payment Done" });
         }
       }
     } else {
       res.status(422).json({ status: false, message: "Payment Failed" });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res
       .status(500)
       .json({ status: false, message: "something went wrong", err: error });

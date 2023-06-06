@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
   picture: {
     type: String,
   },
-  googleId: {
+  googleOrFacebookId: {
     type: String,
   },
   role: {

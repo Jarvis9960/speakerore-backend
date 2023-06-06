@@ -156,3 +156,46 @@ export const applyCouponCode = async (req, res) => {
       .json({ status: false, message: "something went wrong", err: error });
   }
 };
+
+export const getCouponBySearch = async (req, res) => {
+  try {
+    const page = req.query.page || 1;
+    const limit = 10;
+
+    const totalCount = await Coupon.find({
+      $or: [
+        { coupon_code: { $regex: new RegExp(keyword, "i") } },
+        { subscription_type: { $regex: new RegExp(keyword, "i") } },
+      ],
+    }).countDocuments();
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const queryResult = await Coupon.find({
+      $or: [
+        { coupon_code: { $regex: new RegExp(keyword, "i") } },
+        { subscription_type: { $regex: new RegExp(keyword, "i") } },
+      ],
+    })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    if (queryResult.length < 1) {
+      return res.status(404).json({
+        status: true,
+        message: "No data present for given search query",
+      });
+    }
+
+    return res.status(201).json({
+      status: true,
+      message: "successfully fetched query",
+      queryResult: queryResult,
+      totalPages: totalPages,
+      currentPage: page,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};

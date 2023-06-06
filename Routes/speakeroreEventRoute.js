@@ -15,6 +15,7 @@ import {
   makeEventDecline,
   getEventUserHasPublished,
   deleteEvent,
+  getEventsBySearch,
 } from "../Controllers/speakeroreEventController.js";
 import {
   protectedRoute,
@@ -64,6 +65,12 @@ router.get(
   getEventsBySpeakeroreExclusive
 );
 router.get("/geteventforcurrentuser", protectedRoute, getEventUserHasPublished);
+router.get(
+  "/geteventbyquery",
+  protectedRoute,
+  checkSubcription,
+  getEventsBySearch
+);
 
 // getting all events for admin and modify
 router.patch("/makeeventapprove", protectedRouteOfAdmin, makeEventApproved);
@@ -75,7 +82,6 @@ router.get(
 );
 router.get("/getalltrashevents", protectedRouteOfAdmin, getAllTrashEvent);
 router.patch("/makeeventdelete", protectedRouteOfAdmin, deleteEvent);
-
 
 // getting all events for team member
 router.get(
