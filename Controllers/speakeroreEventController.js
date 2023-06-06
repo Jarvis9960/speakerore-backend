@@ -271,7 +271,6 @@ export const getAllArchivedEvent = async (req, res) => {
   }
 };
 
-
 export const getEventsByModes = async (req, res) => {
   try {
     const { mode } = req.query;
@@ -652,7 +651,7 @@ export const getEventsForParticularUser = async (req, res) => {
 };
 
 // Scheduler that check event is over and then archived
-cron.schedule("*/5 * * * * *", () => {
+cron.schedule("0 1 * * *", () => {
   (async function () {
     const currentDate = new Date();
 
@@ -673,7 +672,7 @@ cron.schedule("*/5 * * * * *", () => {
     if (makeEventArchived.acknowledged) {
       console.log(`${eventThatAreEnd.length} events are archived`);
     }
-  });
+  })();
 });
 
 // get event user has published
@@ -769,13 +768,112 @@ export const deleteEvent = async (req, res) => {
     );
 
     if (deleteEventResponse.acknowledged) {
-      return res
-        .status(201)
-        .json({
-          status: true,
-          message: "Event successfully declined and moved to trash",
-        });
+      return res.status(201).json({
+        status: true,
+        message: "Event successfully declined and moved to trash",
+      });
     }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+// get event by search field
+
+export const getEventsBySearch = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+    const page = req.query.page || 1;
+    const limit = 9;
+
+    if (!keyword) {
+      return res
+        .status(422)
+        .json({ status: false, message: "No keyword is provided to query" });
+    }
+
+    const totalCount = await speakeroreEventModel
+      .find({
+        $and: [
+          {
+            $or: [
+              { TitleOfTheEvent: { $regex: new RegExp(keyword, "i") } },
+              {
+                ShortDescriptionOfTheEvent: {
+                  $regex: new RegExp(keyword, "i"),
+                },
+              },
+              {
+                DetailedDescriptionOfTheEvent: {
+                  $regex: new RegExp(keyword, "i"),
+                },
+              },
+              { EventWebsiteUrl: { $regex: new RegExp(keyword, "i") } },
+              { Mode: { $regex: new RegExp(keyword, "i") } },
+              { EngagementTerm: { $regex: new RegExp(keyword, "i") } },
+              { EventType: { $regex: new RegExp(keyword, "i") } },
+              { AudienceType: { $regex: new RegExp(keyword, "i") } },
+              { Category: { $regex: new RegExp(keyword, "i") } },
+              { Location: { $regex: new RegExp(keyword, "i") } },
+              { City: { $regex: new RegExp(keyword, "i") } },
+              { Country: { $regex: new RegExp(keyword, "i") } },
+              { OrganizerName: { $regex: new RegExp(keyword, "i") } },
+              { OrganizerEmail: { $regex: new RegExp(keyword, "i") } },
+              { Tags: { $in: [new RegExp(keyword, "i")] } },
+            ],
+          },
+          { isApproved: true },
+        ],
+      })
+      .countDocuments();
+    const totalPage = Math.ceil(totalCount / limit);
+
+    const queryResult = await speakeroreEventModel.find({
+      $and: [
+        {
+          $or: [
+            { TitleOfTheEvent: { $regex: new RegExp(keyword, "i") } },
+            {
+              ShortDescriptionOfTheEvent: { $regex: new RegExp(keyword, "i") },
+            },
+            {
+              DetailedDescriptionOfTheEvent: {
+                $regex: new RegExp(keyword, "i"),
+              },
+            },
+            { EventWebsiteUrl: { $regex: new RegExp(keyword, "i") } },
+            { Mode: { $regex: new RegExp(keyword, "i") } },
+            { EngagementTerm: { $regex: new RegExp(keyword, "i") } },
+            { EventType: { $regex: new RegExp(keyword, "i") } },
+            { AudienceType: { $regex: new RegExp(keyword, "i") } },
+            { Category: { $regex: new RegExp(keyword, "i") } },
+            { Location: { $regex: new RegExp(keyword, "i") } },
+            { City: { $regex: new RegExp(keyword, "i") } },
+            { Country: { $regex: new RegExp(keyword, "i") } },
+            { OrganizerName: { $regex: new RegExp(keyword, "i") } },
+            { OrganizerEmail: { $regex: new RegExp(keyword, "i") } },
+            { Tags: { $in: [new RegExp(keyword, "i")] } },
+          ],
+        },
+        { isApproved: true },
+      ],
+    });
+
+    if (queryResult.length < 1) {
+      return res
+        .status(404)
+        .json({ status: true, message: "No such events present" });
+    }
+
+    return res.status(201).json({
+      status: true,
+      message: "sucessfully fetched query result",
+      queryResult: queryResult,
+      totalPage: totalPage,
+      currentPage: page,
+    });
   } catch (error) {
     return res
       .status(500)

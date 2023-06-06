@@ -1,4 +1,4 @@
-import UserModel from "../Models/UserModel";
+import UserModel from "../Models/UserModel.js";
 
 export const getAllRegularUser = async (req, res) => {
   try {
@@ -219,25 +219,225 @@ export const getProfileForCurrentUser = async (req, res) => {
   try {
     const currentUserId = req.user._id;
 
-    const savedUser = await UserModel.findById(currentUserId).select(
-      "-googleId",
-      "-blocked"
-    );
+    const savedUser = await UserModel.findById(currentUserId)
+      .select("-googleId", "-blocked")
+      .populate("subcription");
 
     if (!savedUser) {
       return res.status(422).json({ status: false, message: "Invalid Id" });
     }
 
-    return res
-      .status(202)
-      .json({
-        status: true,
-        message: "successfully fetched single user profile",
-        response: savedUser,
-      });
+    return res.status(202).json({
+      status: true,
+      message: "successfully fetched single user profile",
+      response: savedUser,
+    });
   } catch (error) {
     return res
       .status(500)
       .json({ status: false, message: "something went wrong", err: error });
   }
 };
+
+export const getUserBySearch = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+    const page = req.query.page || 1;
+    const limit = 9;
+
+    if (!keyword) {
+      return res
+        .status(422)
+        .json({ status: false, message: "No keyword is provided to query" });
+    }
+
+    const totalCount = await UserModel.find({
+      $and: [
+        {
+          $or: [
+            { alphaUnqiueId: { $regex: new RegExp(keyword, "i") } },
+            { first_name: { $regex: new RegExp(keyword, "i") } },
+            { last_name: { $regex: new RegExp(keyword, "i") } },
+            { email: { $regex: new RegExp(keyword, "i") } },
+          ],
+        },
+        { role: { $ne: "admin" } },
+        { role: { $ne: "Team-member" } },
+      ],
+    }).countDocuments();
+    const totalPage = Math.ceil(totalCount / limit);
+
+    const queryResult = await UserModel.find({
+      $and: [
+        {
+          $or: [
+            { alphaUnqiueId: { $regex: new RegExp(keyword, "i") } },
+            { first_name: { $regex: new RegExp(keyword, "i") } },
+            { last_name: { $regex: new RegExp(keyword, "i") } },
+            { email: { $regex: new RegExp(keyword, "i") } },
+          ],
+        },
+        { role: { $ne: "admin" } },
+        { role: { $ne: "Team-member" } },
+      ],
+    })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    if (queryResult.length < 1) {
+      return res.status(404).json({
+        status: true,
+        message: "NO data is present with given query keyword",
+      });
+    }
+
+    return res.status(202).json({
+      status: true,
+      message: "successfully query data",
+      queryResult: queryResult,
+      totalPage: totalPage,
+      currentPage: page,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const getTeamMemberBySearch = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+    const page = req.query.page || 1;
+    const limit = 9;
+
+    if (!keyword) {
+      return res
+        .status(422)
+        .json({ status: false, message: "No keyword is provided to query" });
+    }
+
+    const totalCount = await UserModel.find({
+      $and: [
+        {
+          $or: [
+            { alphaUnqiueId: { $regex: new RegExp(keyword, "i") } },
+            { first_name: { $regex: new RegExp(keyword, "i") } },
+            { last_name: { $regex: new RegExp(keyword, "i") } },
+            { email: { $regex: new RegExp(keyword, "i") } },
+          ],
+        },
+        { role: { $ne: "admin" } },
+        { role: { $ne: "Regular-user" } },
+      ],
+    }).countDocuments();
+    const totalPage = Math.ceil(totalCount / limit);
+
+    const queryResult = await UserModel.find({
+      $and: [
+        {
+          $or: [
+            { alphaUnqiueId: { $regex: new RegExp(keyword, "i") } },
+            { first_name: { $regex: new RegExp(keyword, "i") } },
+            { last_name: { $regex: new RegExp(keyword, "i") } },
+            { email: { $regex: new RegExp(keyword, "i") } },
+          ],
+        },
+        { role: { $ne: "admin" } },
+        { role: { $ne: "Regular-user" } },
+      ],
+    })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    if (queryResult.length < 1) {
+      return res.status(404).json({
+        status: true,
+        message: "NO data is present with given query keyword",
+      });
+    }
+
+    return res.status(202).json({
+      status: true,
+      message: "successfully query data",
+      queryResult: queryResult,
+      totalPage: totalPage,
+      currentPage: page,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+
+export const getAdminBySearch = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+    const page = req.query.page || 1;
+    const limit = 9;
+
+    if (!keyword) {
+      return res
+        .status(422)
+        .json({ status: false, message: "No keyword is provided to query" });
+    }
+
+    const totalCount = await UserModel.find({
+      $and: [
+        {
+          $or: [
+            { alphaUnqiueId: { $regex: new RegExp(keyword, "i") } },
+            { first_name: { $regex: new RegExp(keyword, "i") } },
+            { last_name: { $regex: new RegExp(keyword, "i") } },
+            { email: { $regex: new RegExp(keyword, "i") } },
+          ],
+        },
+        { role: { $ne: "Team-member" } },
+        { role: { $ne: "Regular-user" } },
+      ],
+    }).countDocuments();
+    const totalPage = Math.ceil(totalCount / limit);
+
+    const queryResult = await UserModel.find({
+      $and: [
+        {
+          $or: [
+            { alphaUnqiueId: { $regex: new RegExp(keyword, "i") } },
+            { first_name: { $regex: new RegExp(keyword, "i") } },
+            { last_name: { $regex: new RegExp(keyword, "i") } },
+            { email: { $regex: new RegExp(keyword, "i") } },
+          ],
+        },
+        { role: { $ne: "Team-member" } },
+        { role: { $ne: "Regular-user" } },
+      ],
+    })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    if (queryResult.length < 1) {
+      return res.status(404).json({
+        status: true,
+        message: "NO data is present with given query keyword",
+      });
+    }
+
+    return res.status(202).json({
+      status: true,
+      message: "successfully query data",
+      queryResult: queryResult,
+      totalPage: totalPage,
+      currentPage: page,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+}
+ 

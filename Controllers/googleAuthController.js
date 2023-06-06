@@ -6,6 +6,7 @@ export const authenticate = passport.authenticate("google", {
 
 export const authenticateCallback = passport.authenticate("google", {
   failureRedirect: "https://www.google.com/",
+  failureMessage: "Login failed"
 });
 
 export const redirectCallback = (req, res) => {

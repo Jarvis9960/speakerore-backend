@@ -2,8 +2,12 @@ import express from "express";
 const router = express.Router();
 import {
   blockRegularUser,
+  getAdminBySearch,
   getAllRegularUser,
   getAllTeamMembers,
+  getProfileForCurrentUser,
+  getTeamMemberBySearch,
+  getUserBySearch,
   makeRegularUser,
   makeTeamMemberToAdmin,
   makeUserToTeamMember,
@@ -28,9 +32,12 @@ router.patch(
   makeTeamMemberToAdmin
 );
 router.patch("/blockregularuser", protectedRouteOfAdmin, blockRegularUser);
+router.get("/getuserbysearch", protectedRouteOfAdmin, getUserBySearch);
+router.get("/getteammemberbysearch", protectedRouteOfAdmin, getTeamMemberBySearch);
+router.get("/getadminbysearch", protectedRouteOfAdmin, getAdminBySearch);
 
 
 // getting profile for current user
-router.get("/getprofile", protectedRoute)
+router.get("/getprofile", protectedRoute, getProfileForCurrentUser);
 
 export default router;
