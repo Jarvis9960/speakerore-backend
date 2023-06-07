@@ -220,7 +220,7 @@ export const getProfileForCurrentUser = async (req, res) => {
     const currentUserId = req.user._id;
 
     const savedUser = await UserModel.findById(currentUserId)
-      .select("-googleId", "-blocked")
+      .select("-googleId -blocked")
       .populate("subcription");
 
     if (!savedUser) {
@@ -373,7 +373,6 @@ export const getTeamMemberBySearch = async (req, res) => {
   }
 };
 
-
 export const getAdminBySearch = async (req, res) => {
   try {
     const { keyword } = req.query;
@@ -439,5 +438,4 @@ export const getAdminBySearch = async (req, res) => {
       .status(500)
       .json({ status: false, message: "something went wrong", err: error });
   }
-}
- 
+};
