@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import connectDB from "./Database/connectDB.js";
@@ -52,6 +52,7 @@ passport.use(
       clientSecret: process.env.GOOGLESECRET,
       callbackURL: "http://localhost:5000/api/auth/google/callback", // Update with your callback URL
       passReqToCallback: true,
+      proxy: true,
     },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
@@ -231,6 +232,30 @@ app.use("/api", SpeakeroreCategoryRoute);
 app.use("/api", SpeakeroreEventRoute);
 app.use("/api", SpeakerorePaymentRoute);
 app.use("/api", UserRoute);
+
+// check Auth
+app.get("/api/auth/check", (req, res) => {
+  try {
+    if (req.isAuthenticated()) {
+      return res
+        .status(202)
+        .json({ status: true, message: "user is logged In" });
+    }
+
+    return res
+      .status(401)
+      .json({ status: true, message: "user is not logged In" });
+  } catch (error) {
+    return (
+      res,
+      status(500).json({
+        status: false,
+        message: "something went wrong",
+        err: error,
+      })
+    );
+  }
+});
 
 // function to make connection to database
 connectDB()

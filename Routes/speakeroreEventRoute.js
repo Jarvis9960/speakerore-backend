@@ -16,6 +16,7 @@ import {
   getEventUserHasPublished,
   deleteEvent,
   getEventsBySearch,
+  getEventsByFilters,
 } from "../Controllers/speakeroreEventController.js";
 import {
   protectedRoute,
@@ -63,6 +64,12 @@ router.get(
   protectedRoute,
   checkSubcription,
   getEventsBySpeakeroreExclusive
+);
+router.get(
+  "/geteventsbyfilter",
+  protectedRoute,
+  checkSubcription,
+  getEventsByFilters
 );
 router.get("/geteventforcurrentuser", protectedRoute, getEventUserHasPublished);
 router.get(

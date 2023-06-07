@@ -11,7 +11,7 @@ export const facebookAuthCallback = passport.authenticate("facebook", {
 
 export const facebookRedirectCallback = (req, res) => {
     try {
-      res.redirect("http://localhost:5000/api/login/success");
+      res.redirect("http://localhost:3000/event");
     } catch (error) {
       console.log(error);
     }

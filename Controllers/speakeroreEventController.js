@@ -271,6 +271,73 @@ export const getAllArchivedEvent = async (req, res) => {
   }
 };
 
+export const getEventsByFilters = async (req, res) => {
+  try {
+    const { mode, category, exclusive, date } = req.query;
+    const page = req.query.page || 1;
+    const limit = 9;
+
+    if (!mode && !category && !exclusive && !date) {
+      return res
+        .status(422)
+        .json({ status: false, message: "No filter parameters provided" });
+    }
+
+    // Build the filter object based on the provided query parameters
+    const filter = { isApprove: true, isArchived: false, isDeleted: false };
+    if (mode) {
+      filter.Mode = mode;
+    }
+    if (category) {
+      filter.Category = category;
+    }
+    if (exclusive) {
+      filter.isSpeakerOreExclusive = exclusive;
+    }
+    if (date) {
+      const targetDate = new Date(date);
+
+      const startDate = new Date(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate()
+      );
+      const endDate = new Date(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate() + 1
+      );
+      filter.EventStartDateAndTime = { $gte: startDate, $lt: endDate };
+    }
+
+    console.log(filter)
+    const totalCount = await speakeroreEventModel.find(filter).countDocuments();
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const savedEvents = await speakeroreEventModel
+      .find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    if (savedEvents.length < 1) {
+      return res
+        .status(404)
+        .json({ status: true, message: `No data is present of mode ${mode}` });
+    }
+
+    return res.status(202).json({
+      status: true,
+      message: `successfully fetched filter data`,
+      savedEvents: savedEvents,
+      totalPages: totalPages,
+      currentPage: page,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 export const getEventsByModes = async (req, res) => {
   try {
     const { mode } = req.query;
@@ -389,6 +456,7 @@ export const getEventsByDate = async (req, res) => {
     }
 
     const targetDate = new Date(date);
+
     const startDate = new Date(
       targetDate.getFullYear(),
       targetDate.getMonth(),
@@ -399,9 +467,6 @@ export const getEventsByDate = async (req, res) => {
       targetDate.getMonth(),
       targetDate.getDate() + 1
     );
-
-    console.log(startDate);
-    console.log(endDate);
 
     const totalCount = speakeroreEventModel
       .find({

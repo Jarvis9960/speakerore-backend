@@ -24,4 +24,6 @@ router.get("/login/success", protectedRoute, (req, res) => {
   }
 });
 
+router.get("/logout", protectedRoute, logout)
+
 export default router;
