@@ -173,18 +173,18 @@ passport.use(
             let uniquefirstChar;
             let uniqueSecChar;
             let uniqueNumber = responseData.id.substring(
-              responseData.sub.length - 4
+              responseData.id.length - 4
             );
-            if (responseData.given_name) {
+            if (responseData.first_name) {
               uniquefirstChar = responseData.first_name.charAt(0);
             }
-            if (responseData.family_name) {
+            if (responseData.last_name) {
               uniqueSecChar = responseData.last_name.charAt(0);
             }
             defaultUser = {
               alphaUnqiueId: `${uniquefirstChar}${uniqueSecChar}${uniqueNumber}`,
-              first_name: responseData.given_name,
-              last_name: responseData.family_name,
+              first_name: responseData.first_name,
+              last_name: responseData.last_name,
               email: responseData.email,
               picture: profile.profileUrl,
               googleOrFacebookId: responseData.id,
