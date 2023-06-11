@@ -39,7 +39,8 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: {
-      secure: false, // Set to true if using HTTPS
+      sameSite: "none",
+      secure: true, // Set to true if using HTTPS
       maxAge: 24 * 60 * 60 * 1000, // Session expiration time (in milliseconds)
     },
   })
@@ -75,7 +76,7 @@ passport.use(
     {
       clientID: process.env.GOOGLECLIENTID,
       clientSecret: process.env.GOOGLESECRET,
-      callbackURL: "http://localhost:5000/api/auth/google/callback", // Update with your callback URL
+      callbackURL: "/api/auth/google/callback", // Update with your callback URL
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
