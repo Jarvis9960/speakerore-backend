@@ -11,7 +11,7 @@ export const authenticateCallback = passport.authenticate("google", {
 
 export const redirectCallback = (req, res) => {
   try {
-    res.redirect("http://localhost:3000/event");
+    res.redirect("https://speakerore.com");
   } catch (error) {
     console.log(error);
   }

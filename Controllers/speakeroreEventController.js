@@ -322,7 +322,7 @@ export const getEventsByFilters = async (req, res) => {
     if (savedEvents.length < 1) {
       return res
         .status(404)
-        .json({ status: true, message: `No data is present of mode ${mode}` });
+        .json({ status: true, message: `No data is present of given query` });
     }
 
     return res.status(202).json({

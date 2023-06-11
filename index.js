@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://speakerore.com",
     credentials: true,
   })
 );
@@ -36,11 +36,13 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: {
-      secure: false, // Set to true if using HTTPS
+      secure: true, // Set to true if using HTTPS
       maxAge: 24 * 60 * 60 * 1000, // Session expiration time (in milliseconds)
     },
   })
-); // Initialize Passport.js
+); 
+
+// Initialize Passport.js
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -50,9 +52,10 @@ passport.use(
     {
       clientID: process.env.GOOGLECLIENTID,
       clientSecret: process.env.GOOGLESECRET,
-      callbackURL: "http://localhost:5000/api/auth/google/callback", // Update with your callback URL
+      callbackURL: "https://sobacke.in/api/auth/google/callback", // Update with your callback URL
       passReqToCallback: true,
       proxy: true,
+      cookieDomain: "https://speakerore.com",
     },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
