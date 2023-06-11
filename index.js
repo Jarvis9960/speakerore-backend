@@ -38,6 +38,8 @@ app.use(
     cookie: {
       secure: true, // Set to true if using HTTPS
       maxAge: 24 * 60 * 60 * 1000, // Session expiration time (in milliseconds)
+      domain: "https://speakerore.com/", // Set the desired domain for the cookie
+      sameSite: "none",
     },
   })
 ); 
