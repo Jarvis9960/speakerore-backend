@@ -14,6 +14,7 @@ import SpeakeroreCategoryRoute from "./Routes/speakeroreCategoryRoute.js";
 import SpeakeroreEventRoute from "./Routes/speakeroreEventRoute.js";
 import SpeakerorePaymentRoute from "./Routes/speakerorePaymentRoute.js";
 import UserRoute from "./Routes/speakeroreUserRoute.js";
+import CouponRoute from "./Routes/speakeroreCouponRoute.js";
 // configure for dotenv file
 dotenv.config({ path: path.resolve("./config.env") });
 
@@ -24,10 +25,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "https://speakerore.com",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
+
+app.set("trust proxy", 1);
 
 // configuring session middleware
 app.use(
@@ -36,17 +39,35 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: {
-      secure: true, // Set to true if using HTTPS
+      secure: false, // Set to true if using HTTPS
       maxAge: 24 * 60 * 60 * 1000, // Session expiration time (in milliseconds)
-      domain: "https://speakerore.com/", // Set the desired domain for the cookie
-      sameSite: "none",
     },
   })
-); 
+);
 
 // Initialize Passport.js
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Configure Passport.js session serialization
+passport.serializeUser((user, done) => {
+  done(null, user.email);
+});
+
+passport.deserializeUser(async (email, done) => {
+  try {
+    // Find the user based on their ID
+    const user = await UserModel.findOne({ email: email });
+
+    if (user) {
+      return done(null, user);
+    } else {
+      return done(null, false);
+    }
+  } catch (error) {
+    return done(error);
+  }
+});
 
 // Configure Passport.js to use Google Strategy
 passport.use(
@@ -54,12 +75,9 @@ passport.use(
     {
       clientID: process.env.GOOGLECLIENTID,
       clientSecret: process.env.GOOGLESECRET,
-      callbackURL: "https://sobacke.in/api/auth/google/callback", // Update with your callback URL
-      passReqToCallback: true,
-      proxy: true,
-      cookieDomain: "https://speakerore.com",
+      callbackURL: "http://localhost:5000/api/auth/google/callback", // Update with your callback URL
     },
-    async (req, accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
       try {
         const existingUser = await UserModel.findOne({
           email: profile._json.email,
@@ -210,26 +228,6 @@ passport.use(
   )
 );
 
-// Configure Passport.js session serialization
-passport.serializeUser((user, done) => {
-  done(null, user.email);
-});
-
-passport.deserializeUser(async (email, done) => {
-  try {
-    // Find the user based on their ID
-    const user = await UserModel.findOne({ email: email });
-
-    if (user) {
-      return done(null, user);
-    } else {
-      return done(null, false);
-    }
-  } catch (error) {
-    return done(error);
-  }
-});
-
 // setting up routes endpoint
 app.use("/api", googleAuthRoutes);
 app.use("/api", facebookAuthRoutes);
@@ -237,6 +235,7 @@ app.use("/api", SpeakeroreCategoryRoute);
 app.use("/api", SpeakeroreEventRoute);
 app.use("/api", SpeakerorePaymentRoute);
 app.use("/api", UserRoute);
+app.use("/api", CouponRoute);
 
 // check Auth
 app.get("/api/auth/check", (req, res) => {

@@ -5,13 +5,13 @@ export const authenticate = passport.authenticate("google", {
 });
 
 export const authenticateCallback = passport.authenticate("google", {
-  failureRedirect: "https://www.google.com/",
-  failureMessage: "Login failed",
+  failureRedirect: "/api/auth/check",
+  session: true
 });
 
 export const redirectCallback = (req, res) => {
   try {
-    res.redirect("https://speakerore.com");
+    res.redirect("http://localhost:3000");
   } catch (error) {
     console.log(error);
   }
