@@ -11,6 +11,7 @@ import {
   makeRegularUser,
   makeTeamMemberToAdmin,
   makeUserToTeamMember,
+  unBlockRegularUser,
 } from "../Controllers/speakeroreUserController.js";
 import {
   protectedRoute,
@@ -32,6 +33,7 @@ router.patch(
   makeTeamMemberToAdmin
 );
 router.patch("/blockregularuser", protectedRouteOfAdmin, blockRegularUser);
+router.patch("/unblockregularuser", protectedRouteOfAdmin, unBlockRegularUser);
 router.get("/getuserbysearch", protectedRouteOfAdmin, getUserBySearch);
 router.get("/getteammemberbysearch", protectedRouteOfAdmin, getTeamMemberBySearch);
 router.get("/getadminbysearch", protectedRouteOfAdmin, getAdminBySearch);

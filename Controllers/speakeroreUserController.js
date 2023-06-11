@@ -11,6 +11,7 @@ export const getAllRegularUser = async (req, res) => {
     const totalPages = Math.ceil(totalCount / limit);
 
     const savedUser = await UserModel.find({ role: "Regular-user" })
+      .populate("subcription")
       .skip((page - 1) * limit)
       .limit(limit);
 
@@ -207,6 +208,39 @@ export const blockRegularUser = async (req, res) => {
 
     if (blockedUserResponse.acknowledged) {
       return res.status(201).json({ status: true, message: "user is blocked" });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const unBlockRegularUser = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res
+        .status(422)
+        .json({ status: false, message: "no user id is given to block" });
+    }
+
+    const isUserExists = await UserModel.findOne({ _id: userId });
+
+    if (!isUserExists) {
+      return res
+        .status(404)
+        .json({ status: false, message: "there no such user to block" });
+    }
+
+    const blockedUserResponse = await UserModel.updateOne(
+      { _id: userId },
+      { $set: { blocked: false } }
+    );
+
+    if (blockedUserResponse.acknowledged) {
+      return res.status(201).json({ status: true, message: "user is unblocked" });
     }
   } catch (error) {
     return res
