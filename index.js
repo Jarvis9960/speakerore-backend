@@ -20,6 +20,15 @@ dotenv.config({ path: path.resolve("./config.env") });
 
 const app = express();
 
+// function to make connection to database
+connectDB()
+  .then((res) => {
+    console.log("connection to database is successfull");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
 // middlewares for app
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -58,10 +67,12 @@ passport.deserializeUser(async (email, done) => {
   try {
     // Find the user based on their ID
     const user = await UserModel.findOne({ email: email });
-
+  
     if (user) {
+      console.log("if is running", user)
       return done(null, user);
     } else {
+      console.log("else if running")
       return done(null, false);
     }
   } catch (error) {
@@ -260,15 +271,6 @@ app.get("/api/auth/check", (req, res) => {
     );
   }
 });
-
-// function to make connection to database
-connectDB()
-  .then((res) => {
-    console.log("connection to database is successfull");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 
 // function to listen to a server
 const PORT = process.env.PORT;
