@@ -25,11 +25,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://speakerore.com",
     credentials: true,
   })
 );
-
 app.set("trust proxy", 1);
 
 // configuring session middleware
@@ -154,7 +153,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOKAPPID,
       clientSecret: process.env.FACEBOOKAPPSECRET,
-      callbackURL: "http://localhost:5000/api/auth/facebook/callback",
+      callbackURL: "/api/auth/facebook/callback",
       profileFields: ["id", "displayName", "email", "name", "profileUrl"],
     },
     async (accessToken, refreshToken, profile, done) => {
