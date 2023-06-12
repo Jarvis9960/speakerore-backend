@@ -5,6 +5,7 @@ export const facebookAuth = passport.authenticate("facebook", {
 });
 
 export const facebookAuthCallback = passport.authenticate("facebook", {
+  successReturnToOrRedirect: "https://speakerore.com",
   failureRedirect: "https://www.google.com/",
   failureMessage: "Login failed",
 });

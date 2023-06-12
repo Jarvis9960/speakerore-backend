@@ -15,6 +15,7 @@ import SpeakeroreEventRoute from "./Routes/speakeroreEventRoute.js";
 import SpeakerorePaymentRoute from "./Routes/speakerorePaymentRoute.js";
 import UserRoute from "./Routes/speakeroreUserRoute.js";
 import CouponRoute from "./Routes/speakeroreCouponRoute.js";
+import cookieParser from "cookie-parser";
 // configure for dotenv file
 dotenv.config({ path: path.resolve("./config.env") });
 
@@ -38,6 +39,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(cookieParser())
 app.set("trust proxy", 1);
 
 // configuring session middleware
@@ -86,7 +88,8 @@ passport.use(
     {
       clientID: process.env.GOOGLECLIENTID,
       clientSecret: process.env.GOOGLESECRET,
-      callbackURL: "/api/auth/google/callback", // Update with your callback URL
+      callbackURL: "https://sobacke.in/api/auth/google/callback", // Update with your callback URL
+      state: true
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
