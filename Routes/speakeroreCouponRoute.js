@@ -8,7 +8,7 @@ router.post("/createcoupon", protectedRouteOfAdmin, createCoupon);
 
 router.get("/getallcoupons", protectedRouteOfAdmin, getAllCoupon);
 
-router.get("/applycouponcode", applyCouponCode);
+router.get("/applycouponcode", protectedRoute, applyCouponCode);
 
 router.get("/getcouponbyquery", protectedRouteOfAdmin, getCouponBySearch);
 
