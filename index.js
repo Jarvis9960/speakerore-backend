@@ -33,7 +33,7 @@ app.use(
     credentials: true,
   })
 );
-// app.set("trust proxy", 1);
+app.set("trust proxy", 1);
 
 // function to make connection to database
 connectDB()
@@ -43,6 +43,7 @@ connectDB()
   .catch((err) => {
     console.log(err);
   });
+
 
 // configuring session middleware
 app.use(
