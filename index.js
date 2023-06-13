@@ -26,7 +26,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "https://lionfish-app-6d5du.ondigitalocean.app",
+    origin: [
+    'https://speakerore.com
+    'https://www.speakerore.com' // Include the "www" subdomain
+    ],
     credentials: true,
   })
 );
