@@ -8,7 +8,6 @@ export const createCoupon = async (req, res) => {
       subcriptionType,
       discount,
       expiryDate,
-      usageCount,
       maxUsage,
     } = req.body;
 
@@ -17,7 +16,6 @@ export const createCoupon = async (req, res) => {
       !subcriptionType ||
       !discount ||
       !expiryDate ||
-      !usageCount ||
       !maxUsage
     ) {
       return res.status(422).json({
@@ -40,7 +38,6 @@ export const createCoupon = async (req, res) => {
       subscription_type: subcriptionType,
       discount: discount,
       expiration_date: expiryDate,
-      usage_count: usageCount,
       max_usages: maxUsage,
     });
 
