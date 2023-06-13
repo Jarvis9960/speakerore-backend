@@ -41,11 +41,11 @@ export const getAllTeamMembers = async (req, res) => {
     const limit = 10;
 
     const totalCount = await UserModel.find({
-      role: "Team-members",
+      role: "Team-member",
     }).countDocuments();
     const totalPages = Math.ceil(totalCount / limit);
 
-    const savedTeamMember = await UserModel.find({ role: "Team-members" })
+    const savedTeamMember = await UserModel.find({ role: "Team-member" })
       .skip((page - 1) * limit)
       .limit(limit);
 
