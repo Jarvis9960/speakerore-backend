@@ -855,15 +855,42 @@ export const reviveEvent = async (req, res) => {
         .json({ status: false, message: "Please provide eventID to delete" });
     }
 
-    const deleteEventResponse = await speakeroreEventModel.updateOne(
+    const reviveEventResponse = await speakeroreEventModel.updateOne(
       { _id: eventId },
       { $set: { isDeleted: false } }
     );
 
-    if (deleteEventResponse.acknowledged) {
+    if (reviveEventResponse.acknowledged) {
       return res.status(201).json({
         status: true,
         message: "Event successfully revived",
+      });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const permanentDeleteEvent = async (req, res) => {
+  try {
+    const { eventId } = req.query;
+
+    if (!eventId) {
+      return res
+        .status(422)
+        .json({ status: false, message: "Please provide eventID to delete" });
+    }
+
+    const deleteEventResponse = await speakeroreEventModel.deleteOne({
+      _id: eventId,
+    });
+
+    if (deleteEventResponse.acknowledged) {
+      return res.status(201).json({
+        status: true,
+        message: "Event permanently deleted",
       });
     }
   } catch (error) {
