@@ -3,13 +3,8 @@ import Coupon from "../Models/speakeroreCoupon.js";
 
 export const createCoupon = async (req, res) => {
   try {
-    const {
-      couponCode,
-      subcriptionType,
-      discount,
-      expiryDate,
-      maxUsage,
-    } = req.body;
+    const { couponCode, subcriptionType, discount, expiryDate, maxUsage } =
+      req.body;
 
     if (
       !couponCode ||
@@ -191,28 +186,36 @@ export const applyCouponCode = async (req, res) => {
 
     const checkAffilateCoupon = await UserModel.findOne({
       alphaUnqiueId: coupon_codeExists.coupon_code,
-    }).populate("subcription");
+    });
 
-    if (checkAffilateCoupon.subcription.Active) {
-      if (!coupon_codeExists.isActive) {
-        return res
-          .status(422)
-          .json({ status: false, message: "Coupon code is not active" });
+    if (checkAffilateCoupon) {
+      
+      const checkSubcription = await UserModel.findOne({
+        alphaUnqiueId: coupon_codeExists.coupon_code,
+      }).populate("subcription");
+
+      if (checkSubcription.subcription.Active) {
+        if (!coupon_codeExists.isActive) {
+          return res
+            .status(422)
+            .json({ status: false, message: "Coupon code is not active" });
+        }
+
+        // Discount amount = Original price × (Discount percentage / 100)
+        let calculateDiscountAmount =
+          amount * (coupon_codeExists.discount / 100);
+
+        // Final price = Original price - Discount amount = $100 - $20 = $80
+        let finalPrice = amount - calculateDiscountAmount;
+
+        return res.status(201).json({
+          status: false,
+          message: "successfully done coupon validation",
+          finalPrice: finalPrice,
+          discount: coupon_codeExists.discount,
+          code: coupon_codeExists.coupon_code,
+        });
       }
-
-      // Discount amount = Original price × (Discount percentage / 100)
-      let calculateDiscountAmount = amount * (coupon_codeExists.discount / 100);
-
-      // Final price = Original price - Discount amount = $100 - $20 = $80
-      let finalPrice = amount - calculateDiscountAmount;
-
-      return res.status(201).json({
-        status: false,
-        message: "successfully done coupon validation",
-        finalPrice: finalPrice,
-        discount: coupon_codeExists.discount,
-        code: coupon_codeExists.coupon_code,
-      });
     } else {
       if (!coupon_codeExists.subscription_type.includes(subcriptionType)) {
         return res.status(422).json({
@@ -249,7 +252,7 @@ export const applyCouponCode = async (req, res) => {
       let finalPrice = amount - calculateDiscountAmount;
 
       return res.status(201).json({
-        status: false,
+        status: true,
         message: "successfully done coupon validation",
         finalPrice: finalPrice,
         discount: coupon_codeExists.discount,
@@ -257,6 +260,7 @@ export const applyCouponCode = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
       .json({ status: false, message: "something went wrong", err: error });
