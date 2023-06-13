@@ -6,7 +6,7 @@ const couponSchema = new mongoose.Schema({
     required: true,
   },
   subscription_type: {
-    type: String,
+    type: Object,
     required: true,
   },
   discount: {

@@ -5,14 +5,13 @@ export const facebookAuth = passport.authenticate("facebook", {
 });
 
 export const facebookAuthCallback = passport.authenticate("facebook", {
-  successReturnToOrRedirect: "https://speakerore.com",
   failureRedirect: "https://www.google.com/",
   failureMessage: "Login failed",
 });
 
 export const facebookRedirectCallback = (req, res) => {
   try {
-    res.redirect("https://speakerore.com");
+    res.redirect("http://localhost:3000");
   } catch (error) {
     console.log(error);
   }

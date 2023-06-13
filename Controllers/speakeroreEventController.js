@@ -310,7 +310,7 @@ export const getEventsByFilters = async (req, res) => {
       filter.EventStartDateAndTime = { $gte: startDate, $lt: endDate };
     }
 
-    console.log(filter)
+    console.log(filter);
     const totalCount = await speakeroreEventModel.find(filter).countDocuments();
     const totalPages = Math.ceil(totalCount / limit);
 
@@ -836,6 +836,34 @@ export const deleteEvent = async (req, res) => {
       return res.status(201).json({
         status: true,
         message: "Event successfully declined and moved to trash",
+      });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const reviveEvent = async (req, res) => {
+  try {
+    const { eventId } = req.body;
+
+    if (!eventId) {
+      return res
+        .status(422)
+        .json({ status: false, message: "Please provide eventID to delete" });
+    }
+
+    const deleteEventResponse = await speakeroreEventModel.updateOne(
+      { _id: eventId },
+      { $set: { isDeleted: false } }
+    );
+
+    if (deleteEventResponse.acknowledged) {
+      return res.status(201).json({
+        status: true,
+        message: "Event successfully revived",
       });
     }
   } catch (error) {
