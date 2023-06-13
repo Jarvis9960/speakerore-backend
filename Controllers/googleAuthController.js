@@ -6,12 +6,12 @@ export const authenticate = passport.authenticate("google", {
 
 export const authenticateCallback = passport.authenticate("google", {
   failureRedirect: "/api/auth/check",
-  session: true
+  session: true,
 });
 
 export const redirectCallback = (req, res) => {
   try {
-    res.redirect("http://localhost:3000");
+    res.redirect("https://speakerore.com");
   } catch (error) {
     console.log(error);
   }
