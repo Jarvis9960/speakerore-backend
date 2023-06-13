@@ -15,11 +15,22 @@ import SpeakeroreEventRoute from "./Routes/speakeroreEventRoute.js";
 import SpeakerorePaymentRoute from "./Routes/speakerorePaymentRoute.js";
 import UserRoute from "./Routes/speakeroreUserRoute.js";
 import CouponRoute from "./Routes/speakeroreCouponRoute.js";
-import cookieParser from "cookie-parser";
+
 // configure for dotenv file
 dotenv.config({ path: path.resolve("./config.env") });
 
 const app = express();
+
+// middlewares for app
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+// app.set("trust proxy", 1);
 
 // function to make connection to database
 connectDB()
@@ -30,18 +41,6 @@ connectDB()
     console.log(err);
   });
 
-// middlewares for app
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: "https://speakerore.com",
-    credentials: true,
-  })
-);
-app.use(cookieParser())
-app.set("trust proxy", 1);
-
 // configuring session middleware
 app.use(
   session({
@@ -50,7 +49,7 @@ app.use(
     saveUninitialized: true,
     cookie: {
       sameSite: "none",
-      secure: true, // Set to true if using HTTPS
+      secure: true,
       maxAge: 24 * 60 * 60 * 1000, // Session expiration time (in milliseconds)
     },
   })
@@ -61,20 +60,17 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Configure Passport.js session serialization
-passport.serializeUser((user, done) => {
-  done(null, user.email);
+passport.serializeUser((id, done) => {
+  return done(null, id.email);
 });
-
-passport.deserializeUser(async (email, done) => {
+passport.deserializeUser(async (id, done) => {
   try {
     // Find the user based on their ID
-    const user = await UserModel.findOne({ email: email });
-  
+    const user = await UserModel.findOne({ email: id });
+
     if (user) {
-      console.log("if is running", user)
       return done(null, user);
     } else {
-      console.log("else if running")
       return done(null, false);
     }
   } catch (error) {
@@ -88,8 +84,7 @@ passport.use(
     {
       clientID: process.env.GOOGLECLIENTID,
       clientSecret: process.env.GOOGLESECRET,
-      callbackURL: "https://sobacke.in/api/auth/google/callback", // Update with your callback URL
-      state: true
+      callbackURL: "/api/auth/google/callback", // Update with your callback URL
     },
     async (accessToken, refreshToken, profile, done) => {
       try {

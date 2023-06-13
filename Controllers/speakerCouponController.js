@@ -217,7 +217,7 @@ export const applyCouponCode = async (req, res) => {
         code: coupon_codeExists.coupon_code,
       });
     } else {
-      if (subcriptionType !== coupon_codeExists.subscription_type) {
+      if (!coupon_codeExists.subscription_type.includes(subcriptionType)) {
         return res.status(422).json({
           status: false,
           message: `This code is valid for only ${coupon_codeExists.subscription_type} subscription`,

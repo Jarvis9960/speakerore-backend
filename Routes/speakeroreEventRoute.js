@@ -17,6 +17,7 @@ import {
   deleteEvent,
   getEventsBySearch,
   getEventsByFilters,
+  reviveEvent,
 } from "../Controllers/speakeroreEventController.js";
 import {
   protectedRoute,
@@ -89,6 +90,7 @@ router.get(
 );
 router.get("/getalltrashevents", protectedRouteOfAdmin, getAllTrashEvent);
 router.patch("/makeeventdelete", protectedRouteOfAdmin, deleteEvent);
+router.patch("/revivefortrash", protectedRouteOfAdmin, reviveEvent);
 
 // getting all events for team member
 router.get(
