@@ -52,7 +52,6 @@ app.use(
       sameSite: "none",
       secure: true,
       maxAge: 24 * 60 * 60 * 1000, // Session expiration time (in milliseconds)
-      domain: ".localhost"
     },
   })
 );
