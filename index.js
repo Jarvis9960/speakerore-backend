@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: [
-    'https://speakerore.com
+    'https://speakerore.com',
     'https://www.speakerore.com' // Include the "www" subdomain
     ],
     credentials: true,
