@@ -5,7 +5,7 @@ export const authenticate = passport.authenticate("google", {
 });
 
 export const authenticateCallback = passport.authenticate("google", {
-  failureRedirect: "/api/auth/check",
+  failureRedirect: "https://speakerore.com",
   session: true,
 });
 
