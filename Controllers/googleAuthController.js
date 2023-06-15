@@ -18,7 +18,19 @@ export const redirectCallback = (req, res) => {
 };
 
 export const logout = (req, res) => {
-  req.logout();
-  req.session.destroy();
-  res.send("Logged out successfully");
+ req.logout(function (err) {
+    if (err) {
+      // Handle error
+      console.error(err);
+      return res.status(500).send("Error occurred during logout");
+    }
+    req.session.destroy(function (err) {
+      if (err) {
+        // Handle error
+        console.error(err);
+        return res.status(500).send("Error occurred during session destruction");
+      }
+      res.send("Logged out successfully");
+    });
+  });
 };
