@@ -288,19 +288,19 @@ app.get("/api/auth/check", (req, res) => {
   }
 });
 
-app.get("https://sobacke.in/api/paymentform", function (req, res) {
+app.get("/api/paymentform", function (req, res) {
   res.render("dataFrom.html");
 });
 
 app.post(
-  "https://sobacke.in/api/ccavRequestHandler",
+  "/api/ccavRequestHandler",
   function (request, response) {
     postReq(request, response);
   }
 );
 
 app.post(
-  "https://sobacke.in/api/ccavResponseHandler",
+  "/api/ccavResponseHandler",
   function (request, response) {
     postRes(request, response);
   }
