@@ -79,10 +79,15 @@ router.get(
 router.get("/geteventforcurrentuser", protectedRoute, getEventUserHasPublished);
 router.get(
   "/geteventbyquery",
+  protectedRoute,
+  checkSubcription,
   getEventsBySearch
 );
-router.get("/geteventbyqueryforcurrentuser", protectedRoute, getEventsBySearchforCurrentUser)
-
+router.get(
+  "/geteventbyqueryforcurrentuser",
+  protectedRoute,
+  getEventsBySearchforCurrentUser
+);
 
 // getting all events for admin and modify
 router.patch("/makeeventapprove", protectedRouteOfAdmin, makeEventApproved);
@@ -96,7 +101,11 @@ router.get("/getalltrashevents", protectedRouteOfAdmin, getAllTrashEvent);
 router.patch("/makeeventdelete", protectedRouteOfAdmin, deleteEvent);
 router.patch("/revivefortrash", protectedRouteOfAdmin, reviveEvent);
 router.delete("/deleteevent", protectedRouteOfAdmin, permanentDeleteEvent);
-router.get("/geteventbyqueryfortrash", protectedRouteOfAdmin, getEventsBySearchforTrash);
+router.get(
+  "/geteventbyqueryfortrash",
+  protectedRouteOfAdmin,
+  getEventsBySearchforTrash
+);
 
 // getting all events for team member
 router.get(
@@ -104,6 +113,10 @@ router.get(
   protectedRouteOfTeamMember,
   getAllArchivedEvent
 );
-router.get("/geteventbyqueryforarchived", protectedRouteOfTeamMember, getEventsBySearchforArchived);
+router.get(
+  "/geteventbyqueryforarchived",
+  protectedRouteOfTeamMember,
+  getEventsBySearchforArchived
+);
 
 export default router;
