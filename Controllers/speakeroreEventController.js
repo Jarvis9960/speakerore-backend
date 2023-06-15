@@ -646,7 +646,7 @@ export const makeEventDecline = async (req, res) => {
         secure: false, // true for 465, false for other ports
         auth: {
           user: "dev.speakerore@gmail.com",
-          pass: process.env.GMAILAPPPASSWORD,
+          pass: "iixfmhklzudmtkqc",
         },
       });
 
