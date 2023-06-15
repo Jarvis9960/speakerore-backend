@@ -33,6 +33,10 @@ app.use(
     credentials: true,
   })
 );
+// [
+//   "https://speakerore.com",
+//   "https://www.speakerore.com", // Include the "www" subdomain
+// ]
 app.set("trust proxy", 1);
 
 // function to make connection to database

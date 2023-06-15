@@ -655,7 +655,7 @@ export const makeEventDecline = async (req, res) => {
         to: userEvent, // list of receivers
         subject: "Your event is approved", // Subject line
         // text: "", // plain text body
-        html: `<p>congratulations, your event is approved</P>. <p>Feedback:- ${feedback}`, // html body
+        html: `<p>Sorry, your event is rejected</P>. <p>Feedback:- ${feedback}`, // html body
       });
 
       if (
@@ -672,6 +672,7 @@ export const makeEventDecline = async (req, res) => {
       }
     }
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
       .json({ status: false, message: "something went wrong", err: error });
@@ -913,44 +914,227 @@ export const getEventsBySearch = async (req, res) => {
         .status(422)
         .json({ status: false, message: "No keyword is provided to query" });
     }
+    const query = {
+      $and: [
+        {
+          $or: [
+            { TitleOfTheEvent: { $regex: keyword, $options: "i" } },
+            { ShortDescriptionOfTheEvent: { $regex: keyword, $options: "i" } },
+            {
+              DetailedDescriptionOfTheEvent: { $regex: keyword, $options: "i" },
+            },
+            { EventWebsiteUrl: { $regex: keyword, $options: "i" } },
+            { Mode: { $regex: keyword, $options: "i" } },
+            { EngagementTerm: { $regex: keyword, $options: "i" } },
+            { EventType: { $regex: keyword, $options: "i" } },
+            { AudienceType: { $regex: keyword, $options: "i" } },
+            { Category: { $regex: keyword, $options: "i" } },
+            { Location: { $regex: keyword, $options: "i" } },
+            { City: { $regex: keyword, $options: "i" } },
+            { Country: { $regex: keyword, $options: "i" } },
+            { OrganizerName: { $regex: keyword, $options: "i" } },
+            { OrganizerEmail: { $regex: keyword, $options: "i" } },
+            { Tags: { $in: [keyword] } }, // Match keyword in Tags
+          ],
+        },
+      ],
+    };
+    const queryResult = await speakeroreEventModel.find(query);
 
-    const totalCount = await speakeroreEventModel
-      .find({
-        $and: [
-          {
-            $or: [
-              { TitleOfTheEvent: { $regex: new RegExp(keyword, "i") } },
-              {
-                ShortDescriptionOfTheEvent: {
-                  $regex: new RegExp(keyword, "i"),
-                },
-              },
-              {
-                DetailedDescriptionOfTheEvent: {
-                  $regex: new RegExp(keyword, "i"),
-                },
-              },
-              { EventWebsiteUrl: { $regex: new RegExp(keyword, "i") } },
-              { Mode: { $regex: new RegExp(keyword, "i") } },
-              { EngagementTerm: { $regex: new RegExp(keyword, "i") } },
-              { EventType: { $regex: new RegExp(keyword, "i") } },
-              { AudienceType: { $regex: new RegExp(keyword, "i") } },
-              { Category: { $regex: new RegExp(keyword, "i") } },
-              { Location: { $regex: new RegExp(keyword, "i") } },
-              { City: { $regex: new RegExp(keyword, "i") } },
-              { Country: { $regex: new RegExp(keyword, "i") } },
-              { OrganizerName: { $regex: new RegExp(keyword, "i") } },
-              { OrganizerEmail: { $regex: new RegExp(keyword, "i") } },
-              { Tags: { $in: [new RegExp(keyword, "i")] } },
-            ],
-          },
-          { isApproved: true },
-        ],
-      })
-      .countDocuments();
+    const filterByApprove = queryResult.filter((curr) => {
+      if (
+        curr.isApprove === true &&
+        curr.isDeleted === false &&
+        curr.isArchived === false
+      ) {
+        return curr;
+      }
+    });
+    const totalCount = filterByApprove.length - 1;
     const totalPage = Math.ceil(totalCount / limit);
 
-    const queryResult = await speakeroreEventModel.find({
+    if (filterByApprove.length < 1) {
+      return res
+        .status(404)
+        .json({ status: true, message: "No such events present" });
+    }
+
+    return res.status(201).json({
+      status: true,
+      message: "sucessfully fetched query result",
+      queryResult: filterByApprove,
+      totalPage: totalPage,
+      currentPage: page,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const getEventsBySearchforArchived = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+    const page = req.query.page || 1;
+    const limit = 9;
+
+    if (!keyword) {
+      return res
+        .status(422)
+        .json({ status: false, message: "No keyword is provided to query" });
+    }
+
+    const query = {
+      $and: [
+        {
+          $or: [
+            { TitleOfTheEvent: { $regex: new RegExp(keyword, "i") } },
+            {
+              ShortDescriptionOfTheEvent: {
+                $regex: new RegExp(keyword, "i"),
+              },
+            },
+            {
+              DetailedDescriptionOfTheEvent: {
+                $regex: new RegExp(keyword, "i"),
+              },
+            },
+            { EventWebsiteUrl: { $regex: new RegExp(keyword, "i") } },
+            { Mode: { $regex: new RegExp(keyword, "i") } },
+            { EngagementTerm: { $regex: new RegExp(keyword, "i") } },
+            { EventType: { $regex: new RegExp(keyword, "i") } },
+            { AudienceType: { $regex: new RegExp(keyword, "i") } },
+            { Category: { $regex: new RegExp(keyword, "i") } },
+            { Location: { $regex: new RegExp(keyword, "i") } },
+            { City: { $regex: new RegExp(keyword, "i") } },
+            { Country: { $regex: new RegExp(keyword, "i") } },
+            { OrganizerName: { $regex: new RegExp(keyword, "i") } },
+            { OrganizerEmail: { $regex: new RegExp(keyword, "i") } },
+            { Tags: { $in: [new RegExp(keyword, "i")] } },
+          ],
+        },
+      ],
+    };
+
+    const queryResult = await speakeroreEventModel.find(query);
+
+    const filterByApprove = queryResult.filter((curr) => {
+      if (curr.isDeleted === false && curr.isArchived === true) {
+        return curr;
+      }
+    });
+    const totalCount = filterByApprove.length - 1;
+    const totalPage = Math.ceil(totalCount / limit);
+
+    if (filterByApprove.length < 1) {
+      return res
+        .status(404)
+        .json({ status: true, message: "No such events present" });
+    }
+
+    return res.status(201).json({
+      status: true,
+      message: "sucessfully fetched query result for archived events",
+      queryResult: filterByApprove,
+      totalPage: totalPage,
+      currentPage: page,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const getEventsBySearchforTrash = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+    const page = req.query.page || 1;
+    const limit = 9;
+
+    if (!keyword) {
+      return res
+        .status(422)
+        .json({ status: false, message: "No keyword is provided to query" });
+    }
+
+    const query = {
+      $and: [
+        {
+          $or: [
+            { TitleOfTheEvent: { $regex: new RegExp(keyword, "i") } },
+            {
+              ShortDescriptionOfTheEvent: {
+                $regex: new RegExp(keyword, "i"),
+              },
+            },
+            {
+              DetailedDescriptionOfTheEvent: {
+                $regex: new RegExp(keyword, "i"),
+              },
+            },
+            { EventWebsiteUrl: { $regex: new RegExp(keyword, "i") } },
+            { Mode: { $regex: new RegExp(keyword, "i") } },
+            { EngagementTerm: { $regex: new RegExp(keyword, "i") } },
+            { EventType: { $regex: new RegExp(keyword, "i") } },
+            { AudienceType: { $regex: new RegExp(keyword, "i") } },
+            { Category: { $regex: new RegExp(keyword, "i") } },
+            { Location: { $regex: new RegExp(keyword, "i") } },
+            { City: { $regex: new RegExp(keyword, "i") } },
+            { Country: { $regex: new RegExp(keyword, "i") } },
+            { OrganizerName: { $regex: new RegExp(keyword, "i") } },
+            { OrganizerEmail: { $regex: new RegExp(keyword, "i") } },
+            { Tags: { $in: [new RegExp(keyword, "i")] } },
+          ],
+        },
+      ],
+    };
+
+    const queryResult = await speakeroreEventModel.find(query);
+
+    const filterByApprove = queryResult.filter((curr) => {
+      if (curr.isDeleted === true) {
+        return curr;
+      }
+    });
+    const totalCount = filterByApprove.length - 1;
+    const totalPage = Math.ceil(totalCount / limit);
+
+    if (filterByApprove.length < 1) {
+      return res
+        .status(404)
+        .json({ status: true, message: "No such events present" });
+    }
+
+    return res.status(201).json({
+      status: true,
+      message: "sucessfully fetched query result for trash events",
+      queryResult: filterByApprove,
+      totalPage: totalPage,
+      currentPage: page,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const getEventsBySearchforCurrentUser = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+    const page = req.query.page || 1;
+    const limit = 9;
+
+    if (!keyword) {
+      return res
+        .status(422)
+        .json({ status: false, message: "No keyword is provided to query" });
+    }
+
+    const query = {
       $and: [
         {
           $or: [
@@ -977,11 +1161,20 @@ export const getEventsBySearch = async (req, res) => {
             { Tags: { $in: [new RegExp(keyword, "i")] } },
           ],
         },
-        { isApproved: true },
       ],
-    });
+    };
 
-    if (queryResult.length < 1) {
+    const queryResult = await speakeroreEventModel.find(query);
+
+    const filterByApprove = queryResult.filter((curr) => {
+      if (curr.User._id === req.user._id) {
+        return curr;
+      }
+    });
+    const totalCount = filterByApprove.length - 1;
+    const totalPage = Math.ceil(totalCount / limit);
+
+    if (filterByApprove.length < 1) {
       return res
         .status(404)
         .json({ status: true, message: "No such events present" });
@@ -989,8 +1182,8 @@ export const getEventsBySearch = async (req, res) => {
 
     return res.status(201).json({
       status: true,
-      message: "sucessfully fetched query result",
-      queryResult: queryResult,
+      message: "sucessfully fetched query result for current user events",
+      queryResult: filterByApprove,
       totalPage: totalPage,
       currentPage: page,
     });
