@@ -15,12 +15,22 @@ import SpeakeroreEventRoute from "./Routes/speakeroreEventRoute.js";
 import SpeakerorePaymentRoute from "./Routes/speakerorePaymentRoute.js";
 import UserRoute from "./Routes/speakeroreUserRoute.js";
 import CouponRoute from "./Routes/speakeroreCouponRoute.js";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+let fileName = fileURLToPath(import.meta.url);
+let __dirname = dirname(fileName);
+import ejs from "ejs";
+import { postReq } from "./Controllers/ccavRequestHandler.js";
+import { postRes } from "./Controllers/ccavResponseHandler.js";
 
 // configure for dotenv file
 dotenv.config({ path: path.resolve("./config.env") });
 
 const app = express();
 
+app.use(express.static("public"));
+app.set("views", __dirname + "/public");
+app.engine("html", ejs.renderFile);
 // middlewares for app
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -276,6 +286,24 @@ app.get("/api/auth/check", (req, res) => {
     );
   }
 });
+
+app.get("https://sobacke.in/api/paymentform", function (req, res) {
+  res.render("dataFrom.html");
+});
+
+app.post(
+  "https://sobacke.in/api/ccavRequestHandler",
+  function (request, response) {
+    postReq(request, response);
+  }
+);
+
+app.post(
+  "https://sobacke.in/api/ccavResponseHandler",
+  function (request, response) {
+    postRes(request, response);
+  }
+);
 
 // function to listen to a server
 const PORT = process.env.PORT;
