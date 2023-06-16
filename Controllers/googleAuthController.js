@@ -18,7 +18,7 @@ export const redirectCallback = (req, res) => {
 };
 
 export const logout = (req, res) => {
- req.logout(function (err) {
+  req.logout(function (err) {
     if (err) {
       // Handle error
       console.error(err);
