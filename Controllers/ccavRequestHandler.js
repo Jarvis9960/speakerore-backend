@@ -29,7 +29,7 @@ export const postReq = async function (req, res) {
     encRequest +
     '"><input type="hidden" name="access_code" id="access_code" value="' +
     accessCode +
-    '"><input type="text" name="currency" value="INR" /><script language="javascript">document.redirect.submit();</script></form>';
+    '"><script language="javascript">document.redirect.submit();</script></form>';
 
   res.writeHeader(200, { "Content-Type": "text/html" });
   res.write(formbody);
