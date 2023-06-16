@@ -25,7 +25,7 @@ export const postReq = async function (req, res) {
   console.log(ccavResponse)
 
   formbody =
-    '<form id="nonseamless" method="post" name="redirect" action="https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction"/> <input type="hidden" id="encRequest" name="encRequest" value="' +
+    '<form id="nonseamless" method="post" name="redirect" action="https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction"/> <input type="hidden" id="encRequest" name="encRequest" value="' +
     encRequest +
     '"><input type="hidden" name="access_code" id="access_code" value="' +
     accessCode +
