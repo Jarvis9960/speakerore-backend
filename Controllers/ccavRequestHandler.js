@@ -23,7 +23,6 @@ export const postReq = async function (req, res) {
   // body += req.body
   encRequest = encrypt(body, keyBase64, ivBase64);
   var ccavResponse = decrypt(encRequest, keyBase64, ivBase64);
-  console.log(ccavResponse);
 
   formbody =
     "https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction" +
