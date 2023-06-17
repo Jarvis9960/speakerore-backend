@@ -51,6 +51,7 @@ connectDB()
     console.log(err);
   });
 
+
 // configuring session middleware
 app.use(
   session({
