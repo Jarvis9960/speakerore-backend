@@ -1,7 +1,11 @@
 <html>
   <head></head>
   <body>
-    <form method="POST" name="customerData" action="https://sobacke.in/api/ccavRequestHandler">
+    <form
+      method="POST"
+      name="customerData"
+      action="https://sobacke.in/api/ccavRequestHandler"
+    >
       <table width="40%" height="100" border="1" align="center">
         <caption>
           <font size="4" color="blue"><b>Integration Kit</b></font>
@@ -18,7 +22,12 @@
         <tr>
           <td>Merchant Id</td>
           <td>
-            <input type="text" name="merchant_id" id="merchant_id" value="2560771" />
+            <input
+              type="text"
+              name="merchant_id"
+              id="merchant_id"
+              value="2560771"
+            />
           </td>
         </tr>
         <tr>
@@ -39,7 +48,7 @@
             <input
               type="text"
               name="redirect_url"
-              value="https://sobacke.in/api/ccavResponseHandler"
+              value="https://sobacke.in/thank.html"
             />
           </td>
         </tr>
@@ -49,7 +58,7 @@
             <input
               type="text"
               name="cancel_url"
-              value="https://sobacke.in/api/paymentfailed"
+              value="https://sobacke.in/cancel.html"
             />
           </td>
         </tr>
