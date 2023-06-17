@@ -1,5 +1,6 @@
 import { encrypt, decrypt } from "./ccavutil.js";
 import crypto from "crypto";
+import qs from "querystring";
 
 export const postReq = async function (req, res) {
   var body = "",
@@ -18,7 +19,7 @@ export const postReq = async function (req, res) {
     0x0c, 0x0d, 0x0e, 0x0f,
   ]).toString("base64");
 
-  body = JSON.stringify(req.body);
+  body = qs.stringify(req.body);
   // body += req.body
   encRequest = encrypt(body, keyBase64, ivBase64);
   var ccavResponse = decrypt(encRequest, keyBase64, ivBase64);
