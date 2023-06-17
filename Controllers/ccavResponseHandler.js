@@ -20,11 +20,10 @@ export const postRes = async function (req, res) {
 
   console.log(`req ${req.body.encResp}`)
 
-  ccavEncResponse = req.body;
-  ccavPOST = qs.parse(ccavEncResponse);
-  var encryption = ccavPOST.encResp;
-  ccavResponse = decrypt(encryption, keyBase64, ivBase64);
-  console.log(`ccavResponse ${ccavResponse}`)
+  ccavEncResponse = req.body.encResp;
+  // ccavPOST = qs.parse(ccavEncResponse);
+  // var encryption = ccavPOST.encResp;
+  ccavResponse = decrypt(ccavEncResponse, keyBase64, ivBase64);
 
   var pData = "";
   pData = "<table border=1 cellspacing=2 cellpadding=2><tr><td>";
