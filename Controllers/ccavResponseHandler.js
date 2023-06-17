@@ -32,7 +32,6 @@ export const postRes = async function (req, res) {
     '<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Response Handler</title></head><body><center><font size="4" color="blue"><b>Response Page</b></font><br>' +
     pData +
     "</center><br></body></html>";
-  res.writeHeader(200, { "Content-Type": "text/html" });
-  res.write(htmlcode);
-  res.end();
+
+  res.redirect(htmlcode);
 };
