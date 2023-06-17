@@ -18,24 +18,31 @@ export const postRes = async function (req, res) {
     0x0c, 0x0d, 0x0e, 0x0f,
   ]).toString("base64");
 
-  console.log(`req ${req.body}`)
+  ccavEncResponse = req.body.encResp;
+  // ccavPOST = qs.parse(ccavEncResponse);
+  // var encryption = ccavPOST.encResp;
+  ccavResponse = decrypt(ccavEncResponse, keyBase64, ivBase64);
 
-  ccavEncResponse = req.body;
-  ccavPOST = qs.parse(ccavEncResponse);
-  var encryption = ccavPOST.encResp;
-  ccavResponse = decrypt(encryption, keyBase64, ivBase64);
-  console.log(`ccavResponse ${ccavResponse}`)
+  const pData = `<table border="1" cellspacing="2" cellpadding="2"><tr><td>${ccavResponse
+    .replace(/=/gi, "</td><td>")
+    .replace(/&/gi, "</td></tr><tr><td>")}</td></tr></table>`;
 
-  var pData = "";
-  pData = "<table border=1 cellspacing=2 cellpadding=2><tr><td>";
-  pData = pData + ccavResponse.replace(/=/gi, "</td><td>");
-  pData = pData.replace(/&/gi, "</td></tr><tr><td>");
-  pData = pData + "</td></tr></table>";
-  console.log(pData);
-  htmlcode =
-    '<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Response Handler</title></head><body><center><font size="4" color="blue"><b>Response Page</b></font><br>' +
-    pData +
-    "</center><br></body></html>";
+  const htmlcode = `
+    <html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Response Handler</title>
+      </head>
+      <body>
+        <center>
+          <font size="4" color="blue"><b>Payment Done</b></font>
+          <br>
+          ${pData}
+        </center>
+        <br>
+      </body>
+    </html>
+  `;
 
-  res.redirect(htmlcode);
+  res.send(htmlcode);
 };
