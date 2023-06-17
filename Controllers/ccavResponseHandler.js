@@ -18,7 +18,7 @@ export const postRes = async function (req, res) {
     0x0c, 0x0d, 0x0e, 0x0f,
   ]).toString("base64");
 
-  console.log(`req ${req.body}`)
+  console.log(`req ${req.body.encResp}`)
 
   ccavEncResponse = req.body;
   ccavPOST = qs.parse(ccavEncResponse);
