@@ -26,7 +26,7 @@ export const postReq = async function (req, res) {
   console.log(ccavResponse);
 
   formbody =
-    "https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction" +
+    "https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction" +
     "&encRequest=" +
     encodeURIComponent(encRequest) +
     "&access_code=" +
