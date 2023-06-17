@@ -664,11 +664,11 @@ export const makeEventDecline = async (req, res) => {
       ) {
         return res
           .status(201)
-          .json({ status: true, Message: "Event has been approved" });
+          .json({ status: true, Message: "Event has been decline" });
       } else {
         return res
           .status(201)
-          .json({ status: true, Message: "Event has been approved" });
+          .json({ status: true, Message: "Event has been decline" });
       }
     }
   } catch (error) {
@@ -1190,6 +1190,45 @@ export const getEventsBySearchforCurrentUser = async (req, res) => {
   } catch (error) {
     return res
       .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const getDataOfEvent = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.body;
+
+    if (!startDate || !endDate) {
+      return res.status(422).json({
+        status: false,
+        message: "Start date or end date is not given",
+      });
+    }
+
+    const newStartDate = new Date(startDate);
+    const newEndDate = new Date(endDate);
+
+    const savedData = await speakeroreEventModel.find({
+      EventStartDateAndTime: {
+        $gt: newStartDate,
+      },
+      EventEndDateAndTime: {
+        $lt: newEndDate,
+      },
+    });
+
+    if (savedData.length < 1) {
+      return res
+        .status(404)
+        .json({ status: false, message: "no data is present for given query" });
+    }
+
+    return res
+      .status(201)
+      .json({ status: true, message: "successfully fetched data", savedData });
+  } catch (error) {
+    return res
+      .status(422)
       .json({ status: false, message: "something went wrong", err: error });
   }
 };

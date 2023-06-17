@@ -35,10 +35,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["https://speakerore.com", "https://www.speakerore.com"],
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
+// ["https://speakerore.com", "https://www.speakerore.com"]
 app.set("trust proxy", 1);
 
 // function to make connection to database
