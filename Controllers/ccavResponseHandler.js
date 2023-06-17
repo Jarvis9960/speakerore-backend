@@ -18,13 +18,13 @@ export const postRes = async function (req, res) {
     0x0c, 0x0d, 0x0e, 0x0f,
   ]).toString("base64");
 
-  console.log(req.body)
+  console.log(`req ${req.body}`)
 
   ccavEncResponse = req.body;
   ccavPOST = qs.parse(ccavEncResponse);
   var encryption = ccavPOST.encResp;
   ccavResponse = decrypt(encryption, keyBase64, ivBase64);
-  console.log(ccavResponse)
+  console.log(`ccavResponse ${ccavResponse}`)
 
   var pData = "";
   pData = "<table border=1 cellspacing=2 cellpadding=2><tr><td>";
