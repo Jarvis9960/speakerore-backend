@@ -22,14 +22,27 @@ export const postRes = async function (req, res) {
   // ccavPOST = qs.parse(ccavEncResponse);
   // var encryption = ccavPOST.encResp;
   ccavResponse = decrypt(ccavEncResponse, keyBase64, ivBase64);
-  console.log(ccavResponse);
 
-  var pData = "";
-  pData = "<table border=1 cellspacing=2 cellpadding=2><tr><td>";
-  pData = pData + ccavResponse.replace(/=/gi, "</td><td>");
-  pData = pData.replace(/&/gi, "</td></tr><tr><td>");
-  pData = pData + '</td></tr></table>'
-  htmlcode = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Response Handler</title></head><body><center><font size="4" color="blue"><b>Response Page</b></font><br>'+ pData +'</center><br></body></html>';
-          
-  res.redirect(htmlcode);
+  const pData = `<table border="1" cellspacing="2" cellpadding="2"><tr><td>${ccavResponse
+    .replace(/=/gi, "</td><td>")
+    .replace(/&/gi, "</td></tr><tr><td>")}</td></tr></table>`;
+
+  const htmlcode = `
+    <html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Response Handler</title>
+      </head>
+      <body>
+        <center>
+          <font size="4" color="blue"><b>Payment Done</b></font>
+          <br>
+          ${pData}
+        </center>
+        <br>
+      </body>
+    </html>
+  `;
+
+  res.send(htmlcode);
 };
