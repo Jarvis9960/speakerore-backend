@@ -23,13 +23,13 @@ export const postReq = async function (req, res) {
   // body += req.body
   encRequest = encrypt(body, keyBase64, ivBase64);
 
-
   formbody =
     "https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction" +
     "&encRequest=" +
     encodeURIComponent(encRequest) +
     "&access_code=" +
     accessCode;
+
 
   res.redirect(formbody);
 };
