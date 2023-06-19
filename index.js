@@ -59,8 +59,8 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: {
-      sameSite: "none",
-      secure: true,
+      // sameSite: "none",
+      // secure: true,
       maxAge: 24 * 60 * 60 * 1000, // Session expiration time (in milliseconds)
     },
   })
@@ -283,6 +283,11 @@ app.get("/api/auth/check", (req, res) => {
 
 app.get("/api/paymentform", function (req, res) {
   res.render("dataFrom.html");
+});
+
+app.post("/api/paymentform", function (req, res) {
+  const data = req.body;
+  res.render("dataFrom.html", { data });
 });
 
 app.post(

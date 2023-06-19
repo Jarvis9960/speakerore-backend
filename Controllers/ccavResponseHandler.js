@@ -1,6 +1,8 @@
 import { decrypt } from "./ccavutil.js";
 import qs from "querystring";
 import crypto from "crypto";
+import Coupon from "../Models/speakeroreCoupon.js";
+import subcriptionModel from "../Models/speakeroreSubcription.js";
 
 export const postRes = async function (req, res) {
   var ccavEncResponse = "",
@@ -81,11 +83,12 @@ export const postRes = async function (req, res) {
             </head>
             <body>
               <center>
-                <font size="4" color="blue"><b>Payment Done</b></font>
+                <font size="4" color="blue"><b>Payment Status</b></font>
                 <br>
                 ${pData}
               </center>
               <br>
+              <a href="https://speakerore.com/event">Go to website</a>
             </body>
           </html>
         `;
