@@ -28,9 +28,7 @@ export const logout = (req, res) => {
       if (err) {
         // Handle error
         console.error(err);
-        return res
-          .status(500)
-          .send("Error occurred during session destruction");
+        return res.status(500).send("Error occurred during session destruction");
       }
       res.send("Logged out successfully");
     });
