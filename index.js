@@ -22,6 +22,7 @@ let fileName = fileURLToPath(import.meta.url);
 let __dirname = dirname(fileName);
 import { postReq } from "./Controllers/ccavRequestHandler.js";
 import { postRes } from "./Controllers/ccavResponseHandler.js";
+import { protectedRoute } from "./Middlewares/protectedMiddleware.js";
 
 // configure for dotenv file
 dotenv.config({ path: path.resolve("./config.env") });
@@ -50,7 +51,6 @@ connectDB()
   .catch((err) => {
     console.log(err);
   });
-
 
 // configuring session middleware
 app.use(
@@ -285,13 +285,21 @@ app.get("/api/paymentform", function (req, res) {
   res.render("dataFrom.html");
 });
 
-app.post("/api/ccavRequestHandler", function (request, response) {
-  postReq(request, response);
-});
+app.post(
+  "/api/ccavRequestHandler",
+  protectedRoute,
+  function (request, response) {
+    postReq(request, response);
+  }
+);
 
-app.post("/api/ccavResponseHandler", function (request, response) {
-  postRes(request, response);
-});
+app.post(
+  "/api/ccavResponseHandler",
+  protectedRoute,
+  function (request, response) {
+    postRes(request, response);
+  }
+);
 
 // function to listen to a server
 const PORT = process.env.PORT;
