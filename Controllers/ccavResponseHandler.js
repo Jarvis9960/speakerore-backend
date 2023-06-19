@@ -23,13 +23,14 @@ export const postRes = async function (req, res) {
   // var encryption = ccavPOST.encResp;
   ccavResponse = decrypt(ccavEncResponse, keyBase64, ivBase64);
 
-  console.log(ccavResponse);
 
   const data = {};
   ccavResponse.split("&").forEach((pair) => {
     const [key, value] = pair.split("=");
     data[key] = value;
   });
+
+  console.log(data)
 
   const pData = `<table border="1" cellspacing="2" cellpadding="2"><tr><td>${ccavResponse
     .replace(/=/gi, "</td><td>")
