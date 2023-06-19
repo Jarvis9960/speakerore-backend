@@ -25,6 +25,12 @@ export const postRes = async function (req, res) {
 
   console.log(ccavResponse);
 
+  const data = {};
+  ccavResponse.split("&").forEach((pair) => {
+    const [key, value] = pair.split("=");
+    data[key] = value;
+  });
+
   const pData = `<table border="1" cellspacing="2" cellpadding="2"><tr><td>${ccavResponse
     .replace(/=/gi, "</td><td>")
     .replace(/&/gi, "</td></tr><tr><td>")}</td></tr></table>`;
