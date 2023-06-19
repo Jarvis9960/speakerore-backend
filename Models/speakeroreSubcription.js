@@ -21,15 +21,15 @@ const subcriptionSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  razorpay_payment_id: {
+  order_id: {
     type: String,
     required: true,
   },
-  razorpay_order_id: {
+  tracking_id: {
     type: String,
     required: true,
   },
-  razorpay_signature: {
+  bank_ref_no: {
     type: String,
     required: true,
   },
