@@ -23,34 +23,75 @@ export const postRes = async function (req, res) {
   // var encryption = ccavPOST.encResp;
   ccavResponse = decrypt(ccavEncResponse, keyBase64, ivBase64);
 
-  console.log(ccavResponse);
-
   const data = {};
   ccavResponse.split("&").forEach((pair) => {
     const [key, value] = pair.split("=");
     data[key] = value;
   });
 
-  const pData = `<table border="1" cellspacing="2" cellpadding="2"><tr><td>${ccavResponse
-    .replace(/=/gi, "</td><td>")
-    .replace(/&/gi, "</td></tr><tr><td>")}</td></tr></table>`;
+  if (data.order_status === "Success") {
+    const startDate = new Date();
+    let endDate = new Date(startDate);
 
-  const htmlcode = `
-    <html>
-      <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Response Handler</title>
-      </head>
-      <body>
-        <center>
-          <font size="4" color="blue"><b>Payment Done</b></font>
-          <br>
-          ${pData}
-        </center>
-        <br>
-      </body>
-    </html>
-  `;
+    // Calculate the start and end dates for different subscription durations
+    if (data.merchant_param1 === "Quaterly") {
+      endDate.setMonth(startDate.getMonth() + 3);
+    } else if (data.merchant_param1 === "Half Yearly") {
+      endDate.setMonth(startDate.getMonth() + 6);
+    } else if (data.merchant_param1 === "Yearly") {
+      endDate.setMonth(startDate.getMonth() + 12);
+    }
 
-  res.send(htmlcode);
+    if (data.merchant_param2 !== "No Coupon Code") {
+      const updateCouponUsage = await Coupon.updateOne(
+        { coupon_code: data.merchant_param2 },
+        { $inc: { usage_count: 1 } }
+      );
+    }
+
+    const newSubcription = new subcriptionModel({
+      User: req.user._id,
+      Subcription_Type: data.merchant_param1,
+      StartDate: startDate,
+      EndDate: endDate,
+      Active: true,
+      order_id: data.order_id,
+      tracking_id: data.tracking_id,
+      bank_ref_no: data.bank_ref_no,
+    });
+
+    const savedSubcription = await newSubcription.save();
+
+    if (savedSubcription) {
+      let updateUserMode = await UserModel.updateOne(
+        { _id: req.user._id },
+        { $set: { subcription: savedSubcription._id } }
+      );
+
+      if (updateUserMode.acknowledged) {
+        const pData = `<table border="1" cellspacing="2" cellpadding="2"><tr><td>${ccavResponse
+          .replace(/=/gi, "</td><td>")
+          .replace(/&/gi, "</td></tr><tr><td>")}</td></tr></table>`;
+
+        const htmlcode = `
+          <html>
+            <head>
+              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+              <title>Response Handler</title>
+            </head>
+            <body>
+              <center>
+                <font size="4" color="blue"><b>Payment Done</b></font>
+                <br>
+                ${pData}
+              </center>
+              <br>
+            </body>
+          </html>
+        `;
+
+        res.send(htmlcode);
+      }
+    }
+  }
 };
