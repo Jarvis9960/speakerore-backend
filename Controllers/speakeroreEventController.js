@@ -1167,7 +1167,7 @@ export const getEventsBySearchforCurrentUser = async (req, res) => {
     const queryResult = await speakeroreEventModel.find(query);
 
     const filterByApprove = queryResult.filter((curr) => {
-      if (curr.User._id === req.user._id) {
+      if (curr.User._id.toString() === req.user._id.toString()) {
         return curr;
       }
     });
