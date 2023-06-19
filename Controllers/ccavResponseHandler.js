@@ -3,6 +3,7 @@ import qs from "querystring";
 import crypto from "crypto";
 import Coupon from "../Models/speakeroreCoupon.js";
 import subcriptionModel from "../Models/speakeroreSubcription.js";
+import UserModel from "../Models/UserModel.js";
 
 export const postRes = async function (req, res) {
   var ccavEncResponse = "",
