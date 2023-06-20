@@ -99,5 +99,29 @@ export const postRes = async function (req, res) {
         res.send(htmlcode);
       }
     }
+  } else {
+    const pData = `<table border="1" cellspacing="2" cellpadding="2"><tr><td>${ccavResponse
+      .replace(/=/gi, "</td><td>")
+      .replace(/&/gi, "</td></tr><tr><td>")}</td></tr></table>`;
+
+    const htmlcode = `
+      <html>
+        <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+          <title>Response Handler</title>
+        </head>
+        <body>
+          <center>
+            <font size="4" color="blue"><b>Payment Status</b></font>
+            <br>
+            ${pData}
+          </center>
+          <br>
+          <a href="https://speakerore.com/event">Go to website</a>
+        </body>
+      </html>
+    `;
+
+    res.send(htmlcode);
   }
 };
