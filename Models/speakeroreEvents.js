@@ -86,7 +86,7 @@ const speakeroreEventSchema = new mongoose.Schema(
       required: true,
     },
     Pincode: {
-      type: Number,
+      type: String,
       required: true,
     },
     Country: {
