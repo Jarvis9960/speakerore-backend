@@ -5,8 +5,8 @@ import qs from "querystring";
 export const postStatusApi = async (request, response) => {
   try {
     // #####################################
-    const orderId = req.params["order_id"];
-    const referenceNo = req.params["reference_no"] || "";
+    const orderId = request.params["order_id"];
+    const referenceNo = request.params["reference_no"] || "";
     const access_code = "AVCF77KF59BD18FCDB";
     const params = { order_no: orderId, reference_no: referenceNo };
     const encReq = encrypt(JSON.stringify(params));
@@ -30,8 +30,8 @@ export const postStatusApi = async (request, response) => {
     console.log("INFo : ", info);
     const payment_status = decrypt(info.enc_response);
     console.log("PS : ", payment_status);
-    res.send(payment_status);
+    response.send(payment_status);
   } catch (error) {
-    return res.status(500).send(error);
+    return response.status(500).send(error);
   }
 };
