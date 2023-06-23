@@ -9,7 +9,8 @@ export const postStatusApi = async (request, response) => {
     const referenceNo = request.params["reference_no"] || "";
     const access_code = "AVCF77KF59BD18FCDB";
     const params = { order_no: orderId, reference_no: referenceNo };
-    const encReq = encrypt(JSON.stringify(params));
+    const paramsString = JSON.stringify(params);
+    const encReq = encrypt(paramsString);
     const final_data = qs.stringify({
       enc_request: encReq,
       access_code: access_code,
