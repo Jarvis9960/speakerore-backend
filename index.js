@@ -60,8 +60,8 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: {
-      // sameSite: "none",
-      // secure: true,
+      sameSite: "none",
+      secure: true,
       maxAge: 24 * 60 * 60 * 1000, // Session expiration time (in milliseconds)
     },
   })

@@ -45,6 +45,7 @@ export const postStatusApi = async (request, response) => {
     console.log("PS : ", payment_status);
     response.send(payment_status);
   } catch (error) {
+    console.log(error);
     return response.status(500).send(error);
   }
 };
