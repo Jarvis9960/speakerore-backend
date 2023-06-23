@@ -42,7 +42,7 @@ export const postStatusApi = async (request, response) => {
     );
     const info = qs.parse(ccavenue_res.data);
     console.log("INFo : ", info);
-    const payment_status = decrypt(info.enc_response);
+    const payment_status = decrypt(info.enc_response, keyBase64, ivBase64);
     console.log("PS : ", payment_status);
     response.send(payment_status);
   } catch (error) {
