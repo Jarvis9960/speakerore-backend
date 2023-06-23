@@ -9,6 +9,7 @@ export const postStatusApi = async (request, response) => {
     const referenceNo = request.params.reference_no || "";
     const access_code = "AVCF77KF59BD18FCDB";
     const params = { order_no: orderId, reference_no: referenceNo };
+    console.log(params)
     const paramsString = qs.stringify(params);
     console.log(paramsString);
     const encReq = encrypt(paramsString);
