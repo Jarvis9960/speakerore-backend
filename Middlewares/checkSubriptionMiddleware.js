@@ -46,7 +46,7 @@ export const checkSubcription = async (req, res, next) => {
       } else {
         return res.status(401).json({
           status: false,
-          message: "User Subcription is ended. Please renew your subcription",
+          message: "User Subcription is not active",
         });
       }
     }
