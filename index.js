@@ -23,6 +23,7 @@ let __dirname = dirname(fileName);
 import { postReq } from "./Controllers/ccavRequestHandler.js";
 import { postRes } from "./Controllers/ccavResponseHandler.js";
 import { protectedRoute } from "./Middlewares/protectedMiddleware.js";
+import { postStatusApi } from "./Controllers/ccavStatusApi.js";
 
 // configure for dotenv file
 dotenv.config({ path: path.resolve("./config.env") });
@@ -305,6 +306,10 @@ app.post(
     postRes(request, response);
   }
 );
+
+app.get("/api/orderstatustracker", function (request, response) {
+  postStatusApi(request, response);
+});
 
 // function to listen to a server
 const PORT = process.env.PORT;

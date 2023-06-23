@@ -22,6 +22,7 @@ import {
   getEventsBySearchforArchived,
   getEventsBySearchforTrash,
   getEventsBySearchforCurrentUser,
+  getDataOfEvent,
 } from "../Controllers/speakeroreEventController.js";
 import {
   protectedRoute,
@@ -106,6 +107,7 @@ router.get(
   protectedRouteOfAdmin,
   getEventsBySearchforTrash
 );
+router.get("/getreportofevent", getDataOfEvent);
 
 // getting all events for team member
 router.get(

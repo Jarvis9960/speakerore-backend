@@ -1196,7 +1196,7 @@ export const getEventsBySearchforCurrentUser = async (req, res) => {
 
 export const getDataOfEvent = async (req, res) => {
   try {
-    const { startDate, endDate } = req.body;
+    const { startDate, endDate } = req.query;
 
     if (!startDate || !endDate) {
       return res.status(422).json({

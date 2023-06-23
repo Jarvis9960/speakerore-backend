@@ -60,42 +60,23 @@ export const createAffilateCoupon = async (req, res) => {
         .json({ status: false, message: "Logged user doesn't have email" });
     }
 
-    const UserIsSubcribedorNot = await UserModel.findOne({ email: email });
+    const existingUserUnqiueId = await UserModel.findOne({ email: email });
 
-    if (UserIsSubcribedorNot.subcription) {
-      const createAffilateCoupon = new Coupon({
-        coupon_code: UserIsSubcribedorNot.alphaUnqiueId,
-        subscription_type: "Affilate",
-        discount: 10,
-        isActive: true,
-        isAffilate: true,
+    const createAffilateCoupon = new Coupon({
+      coupon_code: existingUserUnqiueId.alphaUnqiueId,
+      subscription_type: "Affilate",
+      discount: 10,
+      isActive: true,
+      isAffilate: true,
+    });
+
+    const savedCoupon = await createAffilateCoupon.save();
+
+    if (savedCoupon) {
+      return res.status(201).json({
+        status: true,
+        message: "Affilate coupon successfully created",
       });
-
-      const savedCoupon = await createAffilateCoupon.save();
-
-      if (savedCoupon) {
-        return res.status(201).json({
-          status: true,
-          message: "Affilate coupon successfully created",
-        });
-      }
-    } else {
-      const createAffilateCoupon = new Coupon({
-        coupon_code: UserIsSubcribedorNot.alphaUnqiueId,
-        subscription_type: "Affilate",
-        discount: 5,
-        isActive: true,
-        isAffilate: true,
-      });
-
-      const savedCoupon = await createAffilateCoupon.save();
-
-      if (savedCoupon) {
-        return res.status(201).json({
-          status: true,
-          message: "Affilate coupon successfully created",
-        });
-      }
     }
   } catch (error) {
     return res
@@ -189,7 +170,6 @@ export const applyCouponCode = async (req, res) => {
     });
 
     if (checkAffilateCoupon) {
-      
       const checkSubcription = await UserModel.findOne({
         alphaUnqiueId: coupon_codeExists.coupon_code,
       }).populate("subcription");
