@@ -5,8 +5,8 @@ import qs from "querystring";
 export const postStatusApi = async (request, response) => {
   try {
     // #####################################
-    const orderId = request.params["order_id"];
-    const referenceNo = request.params["reference_no"] || "";
+    const orderId = request.params.order_no;
+    const referenceNo = request.params.reference_no || "";
     const access_code = "AVCF77KF59BD18FCDB";
     const params = { order_no: orderId, reference_no: referenceNo };
     const paramsString = qs.stringify(params);
