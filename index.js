@@ -31,6 +31,7 @@ dotenv.config({ path: path.resolve("./config.env") });
 const app = express();
 
 app.use(express.static("public"));
+app.set("view engine", "ejs");
 app.set("views", __dirname + "/public");
 app.engine("html", ejs.renderFile);
 app.use(express.json());
