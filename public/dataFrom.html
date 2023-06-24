@@ -1,133 +1,178 @@
+<!DOCTYPE html>
 <html>
-  <head></head>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f1f1f1;
+      }
+
+      .integration-form {
+        width: 40%;
+        margin: 0 auto;
+        text-align: center;
+        background-color: #ffffff;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .integration-caption {
+        font-size: 24px;
+        color: blue;
+        padding: 10px;
+      }
+
+      .integration-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .integration-label {
+        flex-basis: 30%;
+        text-align: right;
+        padding-right: 10px;
+      }
+
+      .integration-input {
+        flex-basis: 70%;
+        padding: 10px;
+        margin: 5px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+
+      .checkout-button {
+        padding: 8px 15px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        margin-top: 20px;
+      }
+
+      .checkout-button:hover {
+        background-color: #45a049;
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
   <body>
     <form
       method="POST"
       name="customerData"
       action="https://api.speakerore.com/api/ccavRequestHandler"
+      class="integration-form"
     >
-      <table width="40%" height="100" border="1" align="center">
-        <caption>
-          <font size="4" color="blue"><b>Integration Kit</b></font>
-        </caption>
-      </table>
-      <table width="40%" height="100" border="1" align="center">
-        <tr>
-          <td>Parameter Name:</td>
-          <td>Parameter Value:</td>
-        </tr>
-        <tr>
-          <td colspan="2">Compulsory information</td>
-        </tr>
-        <tr>
-          <td>Merchant Id</td>
-          <td>
-            <input
-              type="text"
-              name="merchant_id"
-              id="merchant_id"
-              value="2560771"
-              readonly
-            />
-          </td>
-        </tr>
-        <tr>
-          <td>Order Id</td>
-          <td>
-            <input
-              type="text"
-              name="order_id"
-              id="order_id"
-              value="21234124"
-              readonly
-            />
-          </td>
-        </tr>
-        <tr>
-          <td>Currency</td>
-          <td>
-            <input
-              type="text"
-              name="currency"
-              id="currency"
-              value="INR"
-              readonly
-            />
-          </td>
-        </tr>
-        <tr>
-          <td>Amount</td>
-          <td>
-            <input
-              type="text"
-              name="amount"
-              id="amount"
-              value="1.00"
-              readonly
-            />
-          </td>
-        </tr>
-        <tr>
-          <td>Redirect URL</td>
-          <td>
-            <input
-              type="text"
-              name="redirect_url"
-              value="https://api.speakerore.com/api/ccavResponseHandler"
-              style="display: none"
-              readonly
-            />
-          </td>
-        </tr>
-        <tr>
-          <td>Cancel URL</td>
-          <td>
-            <input
-              type="text"
-              name="cancel_url"
-              value="https://api.speakerore.com/api/ccavResponseHandler"
-              style="display: none"
-              readonly
-            />
-          </td>
-        </tr>
-        <tr>
-          <td>Language</td>
-          <td>
-            <input type="text" name="language" id="language" value="EN" />
-          </td>
-        </tr>
-
-        <tr>
-          <td>Merchant Param1</td>
-          <td>
-            <input
-              type="text"
-              name="merchant_param1"
-              id="merchant_param1"
-              value="additional Info."
-              readonly
-            />
-          </td>
-        </tr>
-        <tr>
-          <td>Merchant Param2</td>
-          <td>
-            <input
-              type="text"
-              name="merchant_param2"
-              id="merchant_param2"
-              value="additional Info."
-              readonly
-            />
-          </td>
-        </tr>
-
-        <tr>
-          <td></td>
-          <td><input type="submit" value="Checkout" /></td>
-        </tr>
-      </table>
+      <div class="integration-caption">Checkout Form</div>
+      <div class="integration-row">
+        <label for="merchant_id" class="integration-label">Merchant Id:</label>
+        <input
+          type="text"
+          name="merchant_id"
+          id="merchant_id"
+          value="2560771"
+          readonly
+          class="integration-input"
+        />
+      </div>
+      <div class="integration-row">
+        <label for="order_id" class="integration-label">Order Id:</label>
+        <input
+          type="text"
+          name="order_id"
+          id="order_id"
+          readonly
+          class="integration-input"
+        />
+      </div>
+      <div class="integration-row">
+        <label for="currency" class="integration-label">Currency:</label>
+        <input
+          type="text"
+          name="currency"
+          id="currency"
+          readonly
+          class="integration-input"
+        />
+      </div>
+      <div class="integration-row">
+        <label for="amount" class="integration-label">Amount:</label>
+        <input
+          type="text"
+          name="amount"
+          id="amount"
+          readonly
+          class="integration-input"
+        />
+      </div>
+      <div class="integration-row">
+        <label for="redirect_url" class="integration-label"></label>
+        <input
+          type="text"
+          name="redirect_url"
+          value="https://api.speakerore.com/api/ccavResponseHandler"
+          style="display: none"
+          readonly
+          class="integration-input"
+        />
+      </div>
+      <div class="integration-row">
+        <label for="cancel_url" class="integration-label"></label>
+        <input
+          type="text"
+          name="cancel_url"
+          value="https://api.speakerore.com/api/ccavResponseHandler"
+          style="display: none"
+          readonly
+          class="integration-input"
+        />
+      </div>
+      <div class="integration-row">
+        <label for="language" class="integration-label">Language:</label>
+        <input
+          type="text"
+          name="language"
+          id="language"
+          value="EN"
+          readonly
+          class="integration-input"
+        />
+      </div>
+      <div class="integration-row">
+        <label for="merchant_param1" class="integration-label"
+          >Merchant Param1:</label
+        >
+        <input
+          type="text"
+          name="merchant_param1"
+          id="merchant_param1"
+          readonly
+          class="integration-input"
+        />
+      </div>
+      <div class="integration-row">
+        <label for="merchant_param2" class="integration-label"
+          >Merchant Param2:</label
+        >
+        <input
+          type="text"
+          name="merchant_param2"
+          id="merchant_param2"
+          readonly
+          class="integration-input"
+        />
+      </div>
+      <div class="integration-row">
+        <label class="integration-label"></label>
+        <input type="submit" value="Checkout" class="checkout-button" />
+      </div>
     </form>
     <script>
       (function () {

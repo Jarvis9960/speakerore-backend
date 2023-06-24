@@ -31,6 +31,7 @@ dotenv.config({ path: path.resolve("./config.env") });
 const app = express();
 
 app.use(express.static("public"));
+app.set("view engine", "ejs");
 app.set("views", __dirname + "/public");
 app.engine("html", ejs.renderFile);
 app.use(express.json());
@@ -60,8 +61,8 @@ app.use(
     resave: true,
     saveUninitialized: true,
     cookie: {
-      // sameSite: "none",
-      // secure: true,
+      sameSite: "none",
+      secure: true,
       maxAge: 24 * 60 * 60 * 1000, // Session expiration time (in milliseconds)
     },
   })
