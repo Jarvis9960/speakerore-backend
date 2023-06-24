@@ -11,7 +11,7 @@ export const postStatusApi = async (request, response) => {
     const access_code = "AVCF77KF59BD18FCDB";
     const workingKey = "4B15E8BCD619A91BB671A1A953AC8119";
     const params = { order_no: orderId, reference_no: referenceNo };
-    console.log(params);
+    console.log(`params log ${params}`);
 
     var md5 = crypto.createHash("md5").update(workingKey).digest();
     var keyBase64 = Buffer.from(md5).toString("base64");
@@ -31,6 +31,7 @@ export const postStatusApi = async (request, response) => {
       request_type: "JSON",
       response_type: "JSON",
     });
+    console.log(`final_data log ${final_data}`);
     const ccavenue_res = await axios.post(
       `https://apitest.ccavenue.com/apis/servlet/DoWebTrans`,
       final_data,
@@ -41,12 +42,12 @@ export const postStatusApi = async (request, response) => {
       }
     );
     const info = qs.parse(ccavenue_res.data);
-    console.log("INFo : ", info);
+    console.log("INFO response encrypted : ", info);
     const payment_status = decrypt(info.enc_response, keyBase64, ivBase64);
-    console.log("PS : ", payment_status);
-    response.send(payment_status);
+    console.log("Payment status response decrypted : ", payment_status);
+    response.json(payment_status);
   } catch (error) {
     console.log(error);
-    return response.status(500).send(error);
+    return response.status(500).json(error);
   }
 };
