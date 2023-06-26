@@ -25,6 +25,7 @@ import { postRes } from "./Controllers/ccavResponseHandler.js";
 import { protectedRoute } from "./Middlewares/protectedMiddleware.js";
 import { postStatusApi } from "./Controllers/ccavStatusApi.js";
 
+
 // configure for dotenv file
 dotenv.config({ path: path.resolve("./config.env") });
 

@@ -4,6 +4,8 @@ import crypto from "crypto";
 import Coupon from "../Models/speakeroreCoupon.js";
 import subcriptionModel from "../Models/speakeroreSubcription.js";
 import UserModel from "../Models/UserModel.js";
+import Handlebars from "handlebars";
+import fs from "node:fs";
 
 export const postRes = async function (req, res) {
   var ccavEncResponse = "",
@@ -102,24 +104,15 @@ export const postRes = async function (req, res) {
       .replace(/=/gi, "</td><td>")
       .replace(/&/gi, "</td></tr><tr><td>")}</td></tr></table>`;
 
-    const htmlcode = `
-      <html>
-        <head>
-          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-          <title>Response Handler</title>
-        </head>
-        <body>
-          <center>
-            <font size="4" color="blue"><b>Payment Status</b></font>
-            <br>
-            ${pData}
-          </center>
-          <br>
-          <a href="https://speakerore.com/event">Go to website</a>
-        </body>
-      </html>
-    `;
+    // Read the HTML template file
+    const template = fs.readFileSync("../public/response.hbs", "utf-8");
 
-    res.send(htmlcode);
+    // Compile the Handlebars template
+    const compiledTemplate = Handlebars.compile(template);
+
+    // Render the template with the data object
+    const htmlCode = compiledTemplate(pData);
+
+    res.send(htmlCode);
   }
 };
