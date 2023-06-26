@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -8,7 +9,8 @@
       }
 
       .integration-form {
-        width: 40%;
+        width: 90%;
+        max-width: 400px;
         margin: 0 auto;
         text-align: center;
         background-color: #ffffff;
@@ -25,19 +27,16 @@
 
       .integration-row {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
         margin-bottom: 10px;
       }
 
       .integration-label {
-        flex-basis: 30%;
-        text-align: right;
+        text-align: left;
         padding-right: 10px;
       }
 
       .integration-input {
-        flex-basis: 70%;
         padding: 10px;
         margin: 5px;
         box-sizing: border-box;
@@ -61,6 +60,13 @@
         background-color: #45a049;
         transform: scale(1.05);
       }
+
+      @media screen and (max-width: 480px) {
+        .integration-form {
+          width: 90%;
+          max-width: 300px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -70,7 +76,7 @@
       action="https://api.speakerore.com/api/ccavRequestHandler"
       class="integration-form"
     >
-      <div class="integration-caption">Checkout Form</div>
+      <div class="integration-caption">Checkout Preview</div>
       <div class="integration-row">
         <label for="merchant_id" class="integration-label">Merchant Id:</label>
         <input
