@@ -107,7 +107,7 @@ export const postRes = async function (req, res) {
       .replace(/&/gi, "</td></tr><tr><td>")}</td></tr></table>`;
 
     // Read the HTML template file
-    const template = fs.readFileSync("../public/response.hbs", "utf-8");
+    const template = fs.readFileSync("response.hbs", "utf-8");
 
     // Compile the Handlebars template
     const compiledTemplate = Handlebars.compile(template);
