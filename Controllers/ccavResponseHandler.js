@@ -32,11 +32,13 @@ export const postRes = async function (req, res) {
   // var encryption = ccavPOST.encResp;
   ccavResponse = decrypt(ccavEncResponse, keyBase64, ivBase64);
 
+
   const data = {};
   ccavResponse.split("&").forEach((pair) => {
     const [key, value] = pair.split("=");
     data[key] = value;
   });
+
 
   if (data.order_status === "Success") {
     const startDate = new Date();
