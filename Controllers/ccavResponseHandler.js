@@ -6,6 +6,10 @@ import subcriptionModel from "../Models/speakeroreSubcription.js";
 import UserModel from "../Models/UserModel.js";
 import Handlebars from "handlebars";
 import fs from "node:fs";
+import { fileURLToPath } from "url";
+import path, { dirname } from "path";
+let fileName = fileURLToPath(import.meta.url);
+let __dirname = dirname(fileName);
 
 export const postRes = async function (req, res) {
   var ccavEncResponse = "",
@@ -105,7 +109,10 @@ export const postRes = async function (req, res) {
       .replace(/&/gi, "</td></tr><tr><td>")}</td></tr></table>`;
 
     // Read the HTML template file
-    const template = fs.readFileSync("../public/response.hbs", "utf-8");
+    const template = fs.readFileSync(
+      path.join(__dirname + "/public/response.hbs"),
+      "utf-8"
+    );
 
     // Compile the Handlebars template
     const compiledTemplate = Handlebars.compile(template);
