@@ -78,21 +78,110 @@ export const postRes = async function (req, res) {
           .replace(/&/gi, "</td></tr><tr><td>")}</td></tr></table>`;
 
         const htmlcode = `
-          <html>
-            <head>
-              <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-              <title>Response Handler</title>
-            </head>
-            <body>
-              <center>
-                <font size="4" color="blue"><b>Payment Status</b></font>
-                <br>
-                ${pData}
-              </center>
-              <br>
-              <a href="https://speakerore.com/event">Go to website</a>
-            </body>
-          </html>
+        <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+          <title>Response Handler</title>
+          <style>
+            body {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100vh;
+              margin: 0;
+              background-color: #f4f4f4;
+            }
+        
+            .container {
+              text-align: center;
+              background-color: #fff;
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+              max-width: 400px;
+              width: 90%;
+              margin: 20px;
+            }
+        
+            .title {
+              font-size: 24px;
+              color: blue;
+              margin-bottom: 10px;
+            }
+        
+            .content {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              margin-bottom: 20px;
+            }
+        
+            .content div {
+              margin-bottom: 10px;
+              font-size: 16px;
+            }
+        
+            .button {
+              display: inline-block;
+              padding: 10px 20px;
+              background-color: #4CAF50;
+              color: #fff;
+              text-decoration: none;
+              border: none;
+              border-radius: 5px;
+              transition: background-color 0.3s ease;
+              font-size: 16px;
+              margin-top: 10px;
+            }
+        
+            .button:hover {
+              background-color: #45a049;
+            }
+        
+            .button:active {
+              background-color: #3e8e41;
+            }
+        
+            .button .animation {
+              animation: pulse 1s infinite;
+            }
+        
+            @keyframes pulse {
+              0% { transform: scale(1); }
+              50% { transform: scale(1.1); }
+              100% { transform: scale(1); }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="title">Payment Status</div>
+            <div class="content">
+              <div>
+                <strong>Order Status:</strong> ${data.order_status}
+              </div>
+              <div>
+                <strong>Tracking ID:</strong> ${data.tracking_id}
+              </div>
+              <div>
+                <strong>Order ID:</strong> ${data.order_id}
+              </div>
+              <div>
+                <strong>Amount:</strong> ${data.amount}
+              </div>
+            </div>
+            <button class="button"><span class="animation">Go to website</span></button>
+          </div>
+        
+          <script>
+            document.querySelector('.button').addEventListener('click', function() {
+              window.location.href = 'https://speakerore.com/event';
+            });
+          </script>
+        </body>
+        </html>
         `;
 
         res.send(htmlcode);
