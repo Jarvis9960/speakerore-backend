@@ -75,9 +75,6 @@ export const createSpeakeroreEvent = async (req, res) => {
     const [startHours, startMinutes] = eventStartTime.split(":");
     const [endHours, endMinutes] = eventEndTime.split(":");
 
-    console.log(eventStartDateAndTimeObject);
-    console.log(eventEndDateAndTimeObject);
-
     eventStartDateAndTimeObject.setUTCHours(
       parseInt(startHours, 10),
       parseInt(startMinutes, 10)

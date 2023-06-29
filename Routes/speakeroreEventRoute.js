@@ -35,12 +35,7 @@ import { checkSubcription } from "../Middlewares/checkSubriptionMiddleware.js";
 router.post("/createEvent", protectedRoute, createSpeakeroreEvent);
 
 // getting all event for regular user
-router.get(
-  "/getsingleevent/:eventId",
-  protectedRoute,
-  checkSubcription,
-  getSingleEventById
-);
+router.get("/getsingleevent/:eventId", protectedRoute, getSingleEventById);
 router.get(
   "/getallapprovedevent",
   protectedRoute,
