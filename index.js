@@ -295,7 +295,6 @@ app.post("/api/paymentform", function (req, res) {
 
 app.post(
   "/api/ccavRequestHandler",
-  protectedRoute,
   function (request, response) {
     postReq(request, response);
   }
