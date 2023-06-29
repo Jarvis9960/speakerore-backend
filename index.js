@@ -123,7 +123,7 @@ passport.use(
               uniquefirstChar = responseData.given_name.charAt(0);
             }
             if (responseData.family_name) {
-              uniqueSecChar = responseData.family_name.charAt(0);
+              uniqueSecChar = responseData.family_name.charAt(0) || "";
             }
             defaultUser = {
               alphaUnqiueId: `${uniquefirstChar}${uniqueSecChar}${uniqueNumber}`,
@@ -204,7 +204,7 @@ passport.use(
               uniquefirstChar = responseData.first_name.charAt(0);
             }
             if (responseData.last_name) {
-              uniqueSecChar = responseData.last_name.charAt(0);
+              uniqueSecChar = responseData.last_name.charAt(0) || "";
             }
             defaultUser = {
               alphaUnqiueId: `${uniquefirstChar}${uniqueSecChar}${uniqueNumber}`,
