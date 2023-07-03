@@ -176,7 +176,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOKAPPID,
       clientSecret: process.env.FACEBOOKAPPSECRET,
-      callbackURL: "/api/auth/facebook/callback",
+      callbackURL: "https://api.speakerore.com/api/auth/facebook/callback",
       profileFields: ["id", "displayName", "email", "name", "profileUrl"],
     },
     async (accessToken, refreshToken, profile, done) => {
