@@ -171,6 +171,8 @@ passport.use(
 );
 
 // Configure Passport.js to use facebook Strategy
+console.log(process.env.FACEBOOKAPPID)
+console.log(process.env.FACEBOOKAPPSECRET)
 passport.use(
   new FacebookStrategy(
     {
