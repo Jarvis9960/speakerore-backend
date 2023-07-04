@@ -70,6 +70,41 @@ export const getAllTeamMembers = async (req, res) => {
   }
 };
 
+export const getAllAdmins = async (req, res) => {
+  try {
+    const page = req.query.page || 1;
+    const limit = 10;
+
+    const totalCount = await UserModel.find({
+      role: "admin",
+    }).countDocuments();
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const savedTeamMember = await UserModel.find({ role: "admin" })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    if (savedTeamMember.length < 1) {
+      return res.status(404).json({
+        status: true,
+        message: "No Admin are present in database",
+      });
+    }
+
+    return res.status(202).json({
+      status: true,
+      message: "successfully fetched team member",
+      savedTeamMember: savedTeamMember,
+      totalPages: totalPages,
+      currentPage: page,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
 export const makeUserToTeamMember = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -183,6 +218,43 @@ export const makeTeamMemberToAdmin = async (req, res) => {
   }
 };
 
+export const makeAdminToTeammember = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(422).json({
+        status: false,
+        message: "admin id is not given to make admin",
+      });
+    }
+
+    const userExists = await UserModel.findOne({ _id: userId });
+
+    if (!userExists) {
+      return res.status(404).json({
+        status: false,
+        message: "no such user is present in database",
+      });
+    }
+
+    const updateToAdminResponse = await UserModel.updateOne(
+      { _id: userId },
+      { $set: { role: "Team-member" } }
+    );
+
+    if (updateToAdminResponse.acknowledged) {
+      return res
+        .status(201)
+        .json({ status: true, message: "admin has now became team-member" });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
 export const blockRegularUser = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -240,7 +312,9 @@ export const unBlockRegularUser = async (req, res) => {
     );
 
     if (blockedUserResponse.acknowledged) {
-      return res.status(201).json({ status: true, message: "user is unblocked" });
+      return res
+        .status(201)
+        .json({ status: true, message: "user is unblocked" });
     }
   } catch (error) {
     return res

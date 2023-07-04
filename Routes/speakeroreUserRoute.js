@@ -12,6 +12,8 @@ import {
   makeTeamMemberToAdmin,
   makeUserToTeamMember,
   unBlockRegularUser,
+  getAllAdmins,
+  makeAdminToTeammember,
 } from "../Controllers/speakeroreUserController.js";
 import {
   protectedRoute,
@@ -21,6 +23,7 @@ import {
 // getting all user for admin
 router.get("/getallregularuser", protectedRouteOfAdmin, getAllRegularUser);
 router.get("/getallteammembers", protectedRouteOfAdmin, getAllTeamMembers);
+router.get("/getalladmins", protectedRouteOfAdmin, getAllAdmins);
 router.patch(
   "/makeusertoteammember",
   protectedRouteOfAdmin,
@@ -32,12 +35,20 @@ router.patch(
   protectedRouteOfAdmin,
   makeTeamMemberToAdmin
 );
+router.patch(
+  "/makeadmintoteammember",
+  protectedRouteOfAdmin,
+  makeAdminToTeammember
+);
 router.patch("/blockregularuser", protectedRouteOfAdmin, blockRegularUser);
 router.patch("/unblockregularuser", protectedRouteOfAdmin, unBlockRegularUser);
 router.get("/getuserbysearch", protectedRouteOfAdmin, getUserBySearch);
-router.get("/getteammemberbysearch", protectedRouteOfAdmin, getTeamMemberBySearch);
+router.get(
+  "/getteammemberbysearch",
+  protectedRouteOfAdmin,
+  getTeamMemberBySearch
+);
 router.get("/getadminbysearch", protectedRouteOfAdmin, getAdminBySearch);
-
 
 // getting profile for current user
 router.get("/getprofile", protectedRoute, getProfileForCurrentUser);

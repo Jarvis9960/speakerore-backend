@@ -102,7 +102,7 @@ router.get(
   protectedRouteOfAdmin,
   getEventsBySearchforTrash
 );
-router.get("/getreportofevent", getDataOfEvent);
+router.get("/getreportofevent", protectedRouteOfAdmin, getDataOfEvent);
 
 // getting all events for team member
 router.get(
