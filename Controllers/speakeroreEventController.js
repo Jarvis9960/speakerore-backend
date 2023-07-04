@@ -1210,9 +1210,9 @@ export const getDataOfEvent = async (req, res) => {
     const newEndDate = new Date(endDate);
 
     const savedData = await speakeroreEventModel.find({
-      EventStartDateAndTime: {
-        $gt: newStartDate,
-        $lt: newEndDate,
+      createdAt: {
+        $gte: newStartDate,
+        $lte: newEndDate,
       },
     });
 
