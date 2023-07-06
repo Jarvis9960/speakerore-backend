@@ -7,7 +7,7 @@ import {
   getCouponBySearch,
   getCouponOfCurrentUserAffilate,
   createAffilateCoupon,
-  getReportOfAffilateCoupon,
+  getReportOfCoupon,
 } from "../Controllers/speakerCouponController.js";
 import {
   protectedRoute,
@@ -30,6 +30,6 @@ router.get(
 
 router.post("/createaffilatecoupon", protectedRoute, createAffilateCoupon);
 
-router.post("/getreportofcoupon", getReportOfAffilateCoupon);
+router.post("/getreportofcoupon", getReportOfCoupon);
 
 export default router;
