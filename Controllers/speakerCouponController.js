@@ -290,7 +290,7 @@ export const getCouponBySearch = async (req, res) => {
   }
 };
 
-export const getReportOfAffilateCoupon = async (req, res) => {
+export const getReportOfCoupon = async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
 
@@ -305,7 +305,6 @@ export const getReportOfAffilateCoupon = async (req, res) => {
     const newEndDate = new Date(endDate);
 
     const savedData = await Coupon.find({
-      isAffilate: true,
       createdAt: {
         $gte: newStartDate,
         $lte: newEndDate,
