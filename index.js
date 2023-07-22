@@ -79,7 +79,7 @@ passport.serializeUser((id, done) => {
   if(id.email){
     return done(null, id.email);
   }else {
-    console.log(id);
+     console.log(typeof id.id);
   }
  
 });
