@@ -110,7 +110,6 @@ const speakeroreEventSchema = new mongoose.Schema(
     },
     Tags: {
       type: Object,
-      required: true,
     },
     isApprove: {
       type: Boolean,
