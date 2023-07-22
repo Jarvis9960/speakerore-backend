@@ -98,8 +98,6 @@ passport.deserializeUser(async (id, done) => {
 
     const user = await UserModel.findOne(query);
 
-    console.log(user);
-
     if (user) {
       return done(null, user);
     } else {
@@ -120,7 +118,6 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log(profile);
         const existingUser = await UserModel.findOne({
           email: profile._json.email,
         });
@@ -263,7 +260,6 @@ passport.use(
       // Handle the authenticated user's profile
       // You can save or retrieve user data from your database here
       try {
-        console.log(profile);
         const existingUser = await UserModel.findOne({
           email: profile._json.email,
         });
@@ -276,7 +272,6 @@ passport.use(
           var defaultUser;
           const responseData = profile._json;
 
-          console.log(responseData);
 
           if (!responseData.email) {
             let uniquefirstChar;
