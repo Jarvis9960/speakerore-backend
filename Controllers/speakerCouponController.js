@@ -1,3 +1,4 @@
+import moment from "moment";
 import UserModel from "../Models/UserModel.js";
 import Coupon from "../Models/speakeroreCoupon.js";
 
@@ -301,13 +302,13 @@ export const getReportOfCoupon = async (req, res) => {
       });
     }
 
-    const newStartDate = new Date(startDate);
-    const newEndDate = new Date(endDate);
+    const newStartDate = moment(startDate).startOf('day');
+    const newEndDate = moment(endDate).endOf('day');
 
     const savedData = await Coupon.find({
       createdAt: {
-        $gte: newStartDate,
-        $lte: newEndDate,
+        $gte: newStartDate.toDate(),
+        $lte: newEndDate.toDate(),
       },
     });
 

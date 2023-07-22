@@ -6,6 +6,7 @@ import { dirname } from "path";
 import subcriptionModel from "../Models/speakeroreSubcription.js";
 import UserModel from "../Models/UserModel.js";
 import Coupon from "../Models/speakeroreCoupon.js";
+import moment from "moment";
 let fileName = fileURLToPath(import.meta.url);
 let __dirname = dirname(fileName);
 let breakIndex = __dirname.lastIndexOf("\\") + 1;
@@ -128,14 +129,14 @@ export const getReportOfSubcription = async (req, res) => {
       });
     }
 
-    const newStartDate = new Date(startDate);
-    const newEndDate = new Date(endDate);
+    const newStartDate = moment(startDate).startOf('day');
+    const newEndDate = moment(endDate).endOf('day');
 
     const savedData = await subcriptionModel
       .find({
         createdAt: {
-          $gte: newStartDate,
-          $lte: newEndDate,
+          $gte: newStartDate.toDate(),
+          $lte: newEndDate.toDate(),
         },
       })
       .populate("User");

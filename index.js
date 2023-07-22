@@ -24,7 +24,8 @@ import { postReq } from "./Controllers/ccavRequestHandler.js";
 import { postRes } from "./Controllers/ccavResponseHandler.js";
 import { protectedRoute } from "./Middlewares/protectedMiddleware.js";
 import { postStatusApi } from "./Controllers/ccavStatusApi.js";
-
+import contactUsRoute from "./Routes/contactFormRoute.js";
+import nodemailer from "nodemailer";
 
 // configure for dotenv file
 dotenv.config({ path: path.resolve("./config.env") });
@@ -144,7 +145,7 @@ passport.use(
               uniquefirstChar = responseData.given_name.charAt(0);
             }
             if (responseData.family_name) {
-              uniqueSecChar = responseData.family_name.charAt(0);
+              uniqueSecChar = responseData.family_name.charAt(0) || "";
             }
             defaultUser = {
               alphaUnqiueId: `${uniquefirstChar}${uniqueSecChar}${uniqueNumber}`,
@@ -155,6 +156,67 @@ passport.use(
               googleOrFacebookId: responseData.sub,
             };
           }
+
+          if (responseData.email) {
+            let transporter = nodemailer.createTransport({
+              service: "gmail",
+              host: "smtp.gmail.com",
+              port: 587,
+              secure: false, // true for 465, false for other ports
+              auth: {
+                user: "dev.speakerore@gmail.com",
+                pass: "iixfmhklzudmtkqc",
+              },
+            });
+
+            let info = await transporter.sendMail({
+              from: "dev.speakerore@gmail.com", // sender address
+              to: responseData.email, // list of receivers
+              subject:
+                "Unlock Your Full Potential with Speakerore.com - Limited-Time Offer Inside!", // Subject line
+              // text: "", // plain text body
+              html: `
+                <h4>Dear ${responseData.email}</h4><br/>
+                <br />
+                <p>Congratulations on signing up with Speakerore.com, your gateway to a world of speaking opportunities and unprecedented growth! We're thrilled to have you on board, and we can't wait to help you transform your business, brand, and vision.<br />
+      
+                As an expert, trainer, founder, or speaker, you understand the immense value of speaking engagements in expanding your influence, increasing your business reach, and enhancing your brand value. With Speakerore.com, you gain access to an astonishing 200,000+ speaking opportunities worldwide, spanning across a diverse range of categories.<br />
+                
+                Here's why Speakerore.com is the perfect investment for your success: <br />
+                
+                Unleash Your Influence: Every speaking opportunity is a chance to captivate audiences, share your expertise, and solidify your influence within your industry. With our vast selection of global speaking leads, you'll have the power to make a lasting impact wherever your vision takes you.<br />
+                Turbocharge Your Business: Speaking engagements are a proven catalyst for business growth. By connecting with relevant events and audiences, you'll attract new clients, forge strategic partnerships, and unlock lucrative opportunities that propel your business to new heights.<br />
+                Amplify Your Brand Value: Your brand deserves recognition and visibility on a grand scale. Speakerore.com provides the platform for you to showcase your expertise, build credibility, and position yourself as a thought leader, ultimately enhancing the value of your brand in the market.<br />
+                To help you make the most of these incredible benefits, we offer flexible subscription options tailored to your convenience. Choose from our quarterly, half-yearly, or annual subscription plans, allowing you to unlock a wealth of speaking opportunities while enjoying the freedom to select the plan that aligns with your goals.<br />
+                
+                But that's not all! We understand that managing your investment is essential, which is why we provide a hassle-free, no-cost EMI option for all our subscription plans. We want to make sure that your journey with Speakerore.com is not just fruitful but also financially convenient.<br />
+                
+                Don't miss out on this limited-time offer! Click the link below to subscribe immediately and start your journey towards unparalleled success:</p><br />
+                <br />
+                <a href="https://speakerore.com/subscription">Check out subcription link</a><br />
+                <br />
+                <p>Remember, this is not just an investment—it's an investment in your business, brand, and vision. Speakerore.com is your partner in growth, supporting you every step of the way to unlock your full potential.<br />
+      
+                If you have any questions or need assistance, our dedicated support team is here to help. Feel free to reach out to us at info@speakerore.com, and we'll be more than happy to assist you.<br />
+                
+                Subscribe now and seize the incredible opportunities awaiting you at Speakerore.com. Together, let's take your business, brand, and vision to unprecedented heights!<br />
+                
+                Best regards,<br />
+                
+                The Speakerore.com Team<br />
+                
+                P.S. Act fast! This limited-time offer won't last forever. Click the link above to subscribe and embark on your transformative journey with Speakerore.com. Unlock your full potential today!<br />
+                
+                Note: If you're currently unable to view the speaking leads, don't worry. You can still create new events and connect with speakers who can elevate your gatherings to the next level.</p>
+               
+              `, // html body
+            });
+
+            if (info.accepted[0] === responseData.email) {
+              console.log("Email sent to successfully login user");
+            }
+          }
+
           const newUser = new UserModel(defaultUser);
 
           // Save the new user to the database
@@ -194,6 +256,38 @@ passport.use(
           const defauldAdmin = "ankitfukte11@gmail.com";
           var defaultUser;
           const responseData = profile._json;
+
+          console.log(responseData);
+
+          if (!responseData.email) {
+            let uniquefirstChar;
+            let uniqueSecChar;
+            let uniqueNumber = responseData.id.substring(
+              responseData.id.length - 4
+            );
+            if (responseData.first_name) {
+              uniquefirstChar = responseData.first_name.charAt(0);
+            }
+            if (responseData.last_name) {
+              uniqueSecChar = responseData.last_name.charAt(0) || "";
+            }
+            defaultUser = {
+              alphaUnqiueId: `${uniquefirstChar}${uniqueSecChar}${uniqueNumber}`,
+              first_name: responseData.first_name,
+              last_name: responseData.last_name,
+              picture: profile.profileUrl,
+              googleOrFacebookId: responseData.id,
+            };
+
+            const newUser = new UserModel(defaultUser);
+
+            // Save the new user to the database
+            const savedUser = await newUser.save();
+
+            // Return the new user profile
+            return done(null, savedUser);
+          }
+
           if (responseData.email === defauldAdmin) {
             let uniquefirstChar;
             let uniqueSecChar;
@@ -225,7 +319,7 @@ passport.use(
               uniquefirstChar = responseData.first_name.charAt(0);
             }
             if (responseData.last_name) {
-              uniqueSecChar = responseData.last_name.charAt(0);
+              uniqueSecChar = responseData.last_name.charAt(0) || "";
             }
             defaultUser = {
               alphaUnqiueId: `${uniquefirstChar}${uniqueSecChar}${uniqueNumber}`,
@@ -259,6 +353,7 @@ app.use("/api", SpeakeroreEventRoute);
 app.use("/api", SpeakerorePaymentRoute);
 app.use("/api", UserRoute);
 app.use("/api", CouponRoute);
+app.use("/api", contactUsRoute);
 
 // check Auth
 app.get("/api/auth/check", (req, res) => {

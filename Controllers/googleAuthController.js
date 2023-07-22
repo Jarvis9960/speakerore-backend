@@ -1,5 +1,6 @@
 import passport from "passport";
 
+
 export const authenticate = passport.authenticate("google", {
   scope: ["profile", "email"],
 });
@@ -9,7 +10,7 @@ export const authenticateCallback = passport.authenticate("google", {
   session: true,
 });
 
-export const redirectCallback = (req, res) => {
+export const redirectCallback = async (req, res) => {
   try {
     res.redirect("https://speakerore.com");
   } catch (error) {
