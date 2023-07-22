@@ -45,7 +45,6 @@ export const createSpeakeroreEvent = async (req, res) => {
       !titleOfTheEvent ||
       !shortDescriptionOfTheEvent ||
       !detailedDescriptionOfTheEvent ||
-      !eventWebsiteUrl ||
       !mode ||
       !engageMentTerm ||
       !eventType ||
