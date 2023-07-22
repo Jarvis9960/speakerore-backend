@@ -87,7 +87,7 @@ passport.deserializeUser(async (id, done) => {
     // Find the user based on their ID
     console.log(id)
     const user = await UserModel.findOne({
-      $or: [{ email: id }, { googleOrFacebookId: id }],
+      $or: [{ email: id }, { _id: id }],
     });
 
     console.log(user);
