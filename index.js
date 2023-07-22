@@ -274,8 +274,6 @@ passport.use(
           var defaultUser;
           const responseData = profile._json;
 
-          console.log(responseData);
-
           if (!responseData.email) {
             let uniquefirstChar;
             let uniqueSecChar;

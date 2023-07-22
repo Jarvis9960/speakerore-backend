@@ -547,3 +547,39 @@ export const getAdminBySearch = async (req, res) => {
       .json({ status: false, message: "something went wrong", err: error });
   }
 };
+
+export const updateEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res
+        .status(422)
+        .json({ status: false, message: "Please provide email id to update" });
+    }
+
+    const emailExist = await UserModel.findOne({ email: email });
+
+    if (emailExist) {
+      return res.status(422).json({
+        status: false,
+        message: "email is already associate with another person",
+      });
+    }
+
+    const updateEmail = await UserModel.updateOne(
+      { _id: req.user._id },
+      { $set: { email: email } }
+    );
+
+    if (updateEmail.acknowledged) {
+      return res
+        .status(201)
+        .json({ status: true, message: "Email successfully updated" });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
