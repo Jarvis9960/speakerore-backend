@@ -11,8 +11,8 @@ export const facebookAuthCallback = passport.authenticate("facebook", {
 
 export const facebookRedirectCallback = (req, res) => {
   try {
-    res.status(201).json({status: true, message: "login successfull"});
-    // res.redirect("https://speakerore.com");
+    // res.status(201).json({status: true, message: "login successfull"});
+    res.redirect("https://speakerore.com");
   } catch (error) {
     console.log(error);
   }
