@@ -103,6 +103,7 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
+        console.log(profile);
         const existingUser = await UserModel.findOne({
           email: profile._json.email,
         });
