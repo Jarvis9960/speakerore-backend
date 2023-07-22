@@ -89,6 +89,8 @@ passport.deserializeUser(async (id, done) => {
       $or: [{ email: id }, { googleOrFacebookId: id }],
     });
 
+    console.log(user);
+
     if (user) {
       return done(null, user);
     } else {
