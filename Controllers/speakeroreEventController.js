@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import nodemailer from "nodemailer";
 import cron from "node-cron";
+import moment from "moment/moment.js";
 let fileName = fileURLToPath(import.meta.url);
 let __dirname = dirname(fileName);
 let breakIndex = __dirname.lastIndexOf("\\") + 1;
@@ -639,6 +640,7 @@ export const makeEventDecline = async (req, res) => {
       const savedEvent = await speakeroreEventModel.findOne({ _id: eventId });
 
       const userEvent = savedEvent.User.email;
+      const username = savedEvent.User.first_name;
 
       let transporter = nodemailer.createTransport({
         service: "gmail",
@@ -652,11 +654,26 @@ export const makeEventDecline = async (req, res) => {
       });
 
       let info = await transporter.sendMail({
-        from: "jarvis9960@gmail.com", // sender address
+        from: "dev.speakerore@gmail.com", // sender address
         to: userEvent, // list of receivers
-        subject: "Your event is approved", // Subject line
+        subject: "Your Event Submission on Speakerore.com - Action Required", // Subject line
         // text: "", // plain text body
-        html: `<p>Sorry, your event is rejected</P>. <p>Feedback:- ${feedback}`, // html body
+        html: `
+         <h4>Dear ${username},</h4><br />
+         <p>Thank you for submitting your event details to Speakerore.com.<br/> We appreciate your interest in connecting with speakers, trainers, and experts through our platform.<br/> However, we regret to inform you that your event submission has been rejected for the following reason:</p><br/>
+         <p>${feedback}</p><br/>
+         <p>We understand that receiving a rejection can be disappointing, but please note that this decision was made to ensure the quality and relevance of events listed on our platform. We strive to provide the best possible opportunities for our subscribers, and we carefully review each event submission to maintain a high standard.<br/>
+
+         We encourage you to modify and resubmit your event details through our platform, taking into account the above suggestions. We value your commitment to creating meaningful events and connecting with the right speakers.<br/>
+         
+         If you have any questions or need further assistance, please don't hesitate to reach out to our support team at support@speakerore.com. We're here to help you navigate the event submission process and ensure a successful experience on our platform.<br/>
+         
+         Thank you for your understanding, and we look forward to receiving your modified event submission. Together, let's create impactful speaking engagements that leave a lasting impression!<br/>
+         
+         Best regards,<br/>
+         
+         The Speakerore.com Team</p>
+        `, // html body
       });
 
       if (
@@ -1206,13 +1223,13 @@ export const getDataOfEvent = async (req, res) => {
       });
     }
 
-    const newStartDate = new Date(startDate);
-    const newEndDate = new Date(endDate);
+    const newStartDate = moment(startDate).startOf('day');
+    const newEndDate = moment(endDate).endOf('day');
 
     const savedData = await speakeroreEventModel.find({
       createdAt: {
-        $gte: newStartDate,
-        $lte: newEndDate,
+        $gte: newStartDate.toDate(),
+        $lte: newEndDate.toDate(),
       },
     });
 
@@ -1231,3 +1248,4 @@ export const getDataOfEvent = async (req, res) => {
       .json({ status: false, message: "something went wrong", err: error });
   }
 };
+
