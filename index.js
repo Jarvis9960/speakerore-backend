@@ -41,7 +41,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["https://speakerore.com", "https://www.speakerore.com"],
+    origin: ["https://speakerore.com", "https://www.speakerore.com", "http://localhost:3000"],
     credentials: true,
   })
 );
@@ -86,7 +86,6 @@ passport.serializeUser((id, done) => {
 passport.deserializeUser(async (id, done) => {
   try {
     // Find the user based on their ID
-
     // Assuming the 'id' variable can be either an email or an ObjectId
     let query;
     if (mongoose.Types.ObjectId.isValid(id)) {
@@ -98,6 +97,8 @@ passport.deserializeUser(async (id, done) => {
     }
 
     const user = await UserModel.findOne(query);
+
+    console.log(user);
 
     if (user) {
       return done(null, user);
@@ -119,6 +120,7 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
+        console.log(profile);
         const existingUser = await UserModel.findOne({
           email: profile._json.email,
         });
@@ -254,7 +256,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOKAPPID,
       clientSecret: process.env.FACEBOOKAPPSECRET,
-      callbackURL: "/api/auth/facebook/callback",
+      callbackURL: "https://api.speakerore.com/api/auth/facebook/callback",
       profileFields: ["id", "displayName", "email", "name", "profileUrl"],
     },
     async (accessToken, refreshToken, profile, done) => {
