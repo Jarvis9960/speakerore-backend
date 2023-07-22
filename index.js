@@ -76,17 +76,18 @@ app.use(passport.session());
 
 // Configure Passport.js session serialization
 passport.serializeUser((id, done) => {
-  if(id.email){
+  if (id.email) {
     return done(null, id.email);
-  }else {
-     console.log(typeof id.id);
+  } else {
+    return done(null, id.id);
   }
- 
 });
 passport.deserializeUser(async (id, done) => {
   try {
     // Find the user based on their ID
-    const user = await UserModel.findOne({ email: id });
+    const user = await UserModel.findOne({
+      $or: [{ email: id }, { googleOrFacebookId: id }],
+    });
 
     if (user) {
       return done(null, user);
@@ -251,8 +252,7 @@ passport.use(
       // Handle the authenticated user's profile
       // You can save or retrieve user data from your database here
       try {
-
-        console.log(profile)
+        console.log(profile);
         const existingUser = await UserModel.findOne({
           email: profile._json.email,
         });
