@@ -14,6 +14,7 @@ import {
   unBlockRegularUser,
   getAllAdmins,
   makeAdminToTeammember,
+  updateEmail,
 } from "../Controllers/speakeroreUserController.js";
 import {
   protectedRoute,
@@ -52,5 +53,8 @@ router.get("/getadminbysearch", protectedRouteOfAdmin, getAdminBySearch);
 
 // getting profile for current user
 router.get("/getprofile", protectedRoute, getProfileForCurrentUser);
+
+// updating if facebook email doesn't exist
+router.patch("/updateemail", protectedRoute, updateEmail);
 
 export default router;
