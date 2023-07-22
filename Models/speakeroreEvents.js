@@ -43,7 +43,6 @@ const speakeroreEventSchema = new mongoose.Schema(
     },
     EventWebsiteUrl: {
       type: String,
-      required: true,
     },
     Mode: {
       type: String,
