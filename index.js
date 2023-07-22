@@ -26,6 +26,7 @@ import { protectedRoute } from "./Middlewares/protectedMiddleware.js";
 import { postStatusApi } from "./Controllers/ccavStatusApi.js";
 import contactUsRoute from "./Routes/contactFormRoute.js";
 import nodemailer from "nodemailer";
+import mongoose from "mongoose";
 
 // configure for dotenv file
 dotenv.config({ path: path.resolve("./config.env") });
@@ -85,9 +86,18 @@ passport.serializeUser((id, done) => {
 passport.deserializeUser(async (id, done) => {
   try {
     // Find the user based on their ID
-    const user = await UserModel.findOne({
-      $or: [{ email: id }, { googleOrFacebookId: id }],
-    });
+
+    // Assuming the 'id' variable can be either an email or an ObjectId
+    let query;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      // If the 'id' is a valid ObjectId, search using the '_id' field
+      query = { _id: id };
+    } else {
+      // If the 'id' is not a valid ObjectId, search using the 'email' field
+      query = { email: id };
+    }
+
+    const user = await UserModel.findOne(query);
 
     if (user) {
       return done(null, user);
