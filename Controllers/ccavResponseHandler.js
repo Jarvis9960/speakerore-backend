@@ -46,7 +46,7 @@ export const postRes = async function (req, res) {
       endDate.setMonth(startDate.getMonth() + 12);
     }
 
-    if (data.merchant_param2 !== "No Coupon Code") {
+    if (data.merchant_param2 !== "No_Coupon_Code") {
       const updateCouponUsage = await Coupon.updateOne(
         { coupon_code: data.merchant_param2 },
         { $inc: { usage_count: 1 } }

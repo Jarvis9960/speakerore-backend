@@ -94,6 +94,7 @@
           type="text"
           name="order_id"
           id="order_id"
+          value={{order_id}}
           readonly
           class="integration-input"
         />
@@ -104,6 +105,7 @@
           type="text"
           name="currency"
           id="currency"
+          value={{currency}}
           readonly
           class="integration-input"
         />
@@ -114,6 +116,7 @@
           type="text"
           name="amount"
           id="amount"
+          value={{amount}}
           readonly
           class="integration-input"
         />
@@ -159,6 +162,7 @@
           type="text"
           name="merchant_param1"
           id="merchant_param1"
+          value={{merchant_param1}}
           readonly
           class="integration-input"
         />
@@ -171,6 +175,7 @@
           type="text"
           name="merchant_param2"
           id="merchant_param2"
+          value={{merchant_param2}}
           readonly
           class="integration-input"
         />
@@ -180,26 +185,6 @@
         <input type="submit" value="Checkout" class="checkout-button" />
       </div>
     </form>
-    <script>
-      (function () {
-        window.addEventListener("DOMContentLoaded", function () {
-          const queryParams = new URLSearchParams(window.location.search);
-          const merchant_id = queryParams.get("merchant_id") || "";
-          const order_id = queryParams.get("order_id") || "";
-          const currency = queryParams.get("currency") || "";
-          const amount = queryParams.get("amount") || "";
-          const merchant_param1 = queryParams.get("merchant_param1") || "";
-          const merchant_param2 =
-            queryParams.get("merchant_param2") || "No Coupon Code";
-
-          document.getElementById("merchant_id").value = merchant_id;
-          document.getElementById("order_id").value = order_id;
-          document.getElementById("currency").value = currency;
-          document.getElementById("amount").value = amount;
-          document.getElementById("merchant_param1").value = merchant_param1;
-          document.getElementById("merchant_param2").value = merchant_param2;
-        });
-      })();
-    </script>
   </body>
 </html>
+
