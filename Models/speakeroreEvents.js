@@ -43,7 +43,6 @@ const speakeroreEventSchema = new mongoose.Schema(
     },
     EventWebsiteUrl: {
       type: String,
-      required: true,
     },
     Mode: {
       type: String,
@@ -111,7 +110,6 @@ const speakeroreEventSchema = new mongoose.Schema(
     },
     Tags: {
       type: Object,
-      required: true,
     },
     isApprove: {
       type: Boolean,
