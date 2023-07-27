@@ -531,14 +531,131 @@ app.get("/api/paymentform", function (req, res) {
       merchant_param2,
     } = data;
 
-    res.render("response", {
+    const orderIdExists = await subcriptionModel.findOne({
       order_id: order_id,
-      currency: currency,
-      amount: amount,
-      merchant_id: merchant_id,
-      merchant_param1: merchant_param1,
-      merchant_param2: merchant_param2,
     });
+
+    if (orderIdExists) {
+      const htmlcode = `
+    <html>
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <title>Response Handler</title>
+      <style>
+        body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+          background-color: #f4f4f4;
+        }
+    
+        .container {
+          text-align: center;
+          background-color: #fff;
+          padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+          max-width: 400px;
+          width: 90%;
+          margin: 20px;
+        }
+    
+        .title {
+          font-size: 24px;
+          color: blue;
+          margin-bottom: 10px;
+        }
+    
+        .content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+    
+        .content div {
+          margin-bottom: 10px;
+          font-size: 16px;
+        }
+    
+        .button {
+          display: inline-block;
+          padding: 10px 20px;
+          background-color: #4CAF50;
+          color: #fff;
+          text-decoration: none;
+          border: none;
+          border-radius: 5px;
+          transition: background-color 0.3s ease;
+          font-size: 16px;
+          margin-top: 10px;
+        }
+    
+        .button:hover {
+          background-color: #45a049;
+        }
+    
+        .button:active {
+          background-color: #3e8e41;
+        }
+    
+        .button .animation {
+          animation: pulse 1s infinite;
+        }
+    
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1); }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="title">Payment Status</div>
+        <div class="content">
+          <div>
+            <strong>couldn't process payment:</strong>Order Id repeated couldn't process payment please try again.
+          </div>
+        <button class="button"><span class="animation">Go to website</span></button>
+      </div>
+    
+      <script>
+        document.querySelector('.button').addEventListener('click', function() {
+          window.location.href = 'https://speakerore.com/event';
+        });
+      </script>
+    </body>
+    </html>
+    `;
+
+      res.send(htmlcode);
+    } else {
+      const saveOrderId = new subcriptionModel({
+        Subcription_Type: merchant_param1,
+        Active: false,
+        order_id: order_id,
+      });
+
+      const savedResponse = await saveOrderId.save()
+
+      if (savedResponse) {
+        console.log("Order id is saved to database");
+      }
+
+      res.render("response", {
+        order_id: order_id,
+        currency: currency,
+        amount: amount,
+        merchant_id: merchant_id,
+        merchant_param1: merchant_param1,
+        merchant_param2: merchant_param2,
+      });
+    }
   }
 });
 
