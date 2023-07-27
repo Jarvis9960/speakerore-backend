@@ -75,7 +75,7 @@ export const postRes = async function (req, res) {
 
     const subcriptionId = await subcriptionModel.findOne({order_id: data.order_id});
 
-    if (savedSubcription) {
+    if (subcriptionId) {
       let updateUserMode = await UserModel.updateOne(
         { _id: req.user._id },
         { $set: { subcription: subcriptionId._id } }
