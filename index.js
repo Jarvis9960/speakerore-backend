@@ -28,6 +28,7 @@ import contactUsRoute from "./Routes/contactFormRoute.js";
 import nodemailer from "nodemailer";
 import mongoose from "mongoose";
 import CryptoJS from "crypto-js";
+import subcriptionModel from "./Models/speakeroreSubcription.js";
 
 // configure for dotenv file
 dotenv.config({ path: path.resolve("./config.env") });
