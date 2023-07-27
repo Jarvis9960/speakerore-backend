@@ -417,7 +417,7 @@ const decryptObject = (encryptedData) => {
   }
 };
 
-app.get("/api/paymentform", function (req, res) {
+app.get("/api/paymentform", async function (req, res) {
   const { encrypt } = req.query;
 
   const data = decryptObject(encrypt);
