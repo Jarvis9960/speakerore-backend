@@ -1,7 +1,7 @@
 import mongoose, { mongo } from "mongoose";
 
 const subcriptionSchema = new mongoose.Schema(
-  {
+ {
     User: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
@@ -12,11 +12,9 @@ const subcriptionSchema = new mongoose.Schema(
     },
     StartDate: {
       type: Date,
-      required: true,
     },
     EndDate: {
       type: Date,
-      required: true,
     },
     Active: {
       type: Boolean,
@@ -24,15 +22,14 @@ const subcriptionSchema = new mongoose.Schema(
     },
     order_id: {
       type: String,
+      unique: true,
       required: true,
     },
     tracking_id: {
       type: String,
-      required: true,
     },
     bank_ref_no: {
       type: String,
-      required: true,
     },
   },
   {
