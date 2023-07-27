@@ -53,25 +53,32 @@ export const postRes = async function (req, res) {
         { coupon_code: data.merchant_param2 },
         { $inc: { usage_count: 1 } }
       );
+
+      if (updateCouponUsage) {
+        console.log("Coupon is incremented to one");
+      }
     }
 
-    const newSubcription = new subcriptionModel({
-      User: req.user._id,
-      Subcription_Type: data.merchant_param1,
-      StartDate: startDate,
-      EndDate: endDate,
-      Active: true,
-      order_id: data.order_id,
-      tracking_id: data.tracking_id,
-      bank_ref_no: data.bank_ref_no,
-    });
+    const updateSubcriptionStatus = await subcriptionModel.updateOne(
+      { order_id: data.order_id },
+      {
+        $set: {
+          User: req.user._id,
+          StartDate: startDate,
+          EndDate: endDate,
+          Active: true,
+          tracking_id: data.tracking_id,
+          bank_ref_no: data.bank_ref_no,
+        },
+      }
+    );
 
-    const savedSubcription = await newSubcription.save();
+    const subcriptionId = await subcriptionModel.findOne({order_id: data.order_id});
 
     if (savedSubcription) {
       let updateUserMode = await UserModel.updateOne(
         { _id: req.user._id },
-        { $set: { subcription: savedSubcription._id } }
+        { $set: { subcription: subcriptionId._id } }
       );
 
       if (updateUserMode.acknowledged) {
