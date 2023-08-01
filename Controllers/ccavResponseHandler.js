@@ -59,6 +59,12 @@ export const postRes = async function (req, res) {
       }
     }
 
+    req.session.order_id = null;
+    req.session.currency = null;
+    req.session.amount = null;
+    req.session.merchant_param1 = null;
+    req.session.merchant_param2 = null;
+
     const updateSubcriptionStatus = await subcriptionModel.updateOne(
       { order_id: data.order_id },
       {
@@ -82,6 +88,7 @@ export const postRes = async function (req, res) {
       );
 
       if (updateUserMode.acknowledged) {
+       
         const pData = `<table border="1" cellspacing="2" cellpadding="2"><tr><td>${ccavResponse
           .replace(/=/gi, "</td><td>")
           .replace(/&/gi, "</td></tr><tr><td>")}</td></tr></table>`;
@@ -197,6 +204,14 @@ export const postRes = async function (req, res) {
       }
     }
   } else {
+    
+    req.session.order_id = null;
+    req.session.currency = null;
+    req.session.amount = null;
+    req.session.merchant_param1 = null;
+    req.session.merchant_param2 = null;
+
+
     const pData = `<table border="1" cellspacing="2" cellpadding="2"><tr><td>${ccavResponse
       .replace(/=/gi, "</td><td>")
       .replace(/&/gi, "</td></tr><tr><td>")}</td></tr></table>`;

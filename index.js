@@ -532,6 +532,12 @@ app.get("/api/paymentform", async function (req, res) {
       merchant_param2,
     } = data;
 
+    req.session.order_id = order_id;
+    req.session.currency = currency;
+    req.session.amount = amount;
+    req.session.merchant_param1 = merchant_param1;
+    req.session.merchant_param2 = merchant_param2;
+
     const orderIdExists = await subcriptionModel.findOne({
       order_id: order_id,
     });
@@ -640,6 +646,7 @@ app.get("/api/paymentform", async function (req, res) {
         Subcription_Type: merchant_param1,
         Active: false,
         order_id: order_id,
+        amount: amount
       });
 
       const savedResponse = await saveOrderId.save()

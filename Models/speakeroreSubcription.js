@@ -31,6 +31,9 @@ const subcriptionSchema = new mongoose.Schema(
     bank_ref_no: {
       type: String,
     },
+    amount: {
+      type: String,
+    }
   },
   {
     timestamps: true,
