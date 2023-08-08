@@ -44,7 +44,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["https://speakerore.com", "https://www.speakerore.com", "http://localhost:3000", "http://192.168.1.5:3000"],
+    origin: ["https://speakerore.com", "https://www.speakerore.com", "http://localhost:3000", "http://192.168.1.5:3000", "http://192.168.1.2:3000"],
     credentials: true,
   })
 );
