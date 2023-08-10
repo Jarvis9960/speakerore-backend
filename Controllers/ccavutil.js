@@ -22,11 +22,15 @@ export const encrypt = function (plainText, keyBase64, ivBase64) {
 };
 
 export const decrypt = function (messagebase64, keyBase64, ivBase64) {
-  const key = Buffer.from(keyBase64, "base64");
-  const iv = Buffer.from(ivBase64, "base64");
+  try {
+    const key = Buffer.from(keyBase64, "base64");
+    const iv = Buffer.from(ivBase64, "base64");
 
-  const decipher = crypto.createDecipheriv(getAlgorithm(keyBase64), key, iv);
-  let decrypted = decipher.update(messagebase64, "hex");
-  decrypted += decipher.final();
-  return decrypted;
+    const decipher = crypto.createDecipheriv(getAlgorithm(keyBase64), key, iv);
+    let decrypted = decipher.update(messagebase64, "hex");
+    decrypted += decipher.final();
+    return decrypted;
+  } catch (error) {
+    return null;
+  }
 };
