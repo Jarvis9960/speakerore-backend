@@ -9,7 +9,7 @@ import Handlebars from "handlebars";
 export const postRes = async function (req, res) {
   var ccavEncResponse = "",
     ccavResponse = "",
-    workingKey = "4B15E8BCD619A91BB671A1A953AC8119", //Put in the 32-Bit key shared by CCAvenues.
+    workingKey = "83DF91CC0CCB955ADF79C73933B35506", //Put in the 32-Bit key shared by CCAvenues.
     ccavPOST = "";
 
   //Generate Md5 hash for the key and then convert in base64 string

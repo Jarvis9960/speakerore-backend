@@ -356,6 +356,7 @@ passport.use(
           return done(null, savedUser);
         }
       } catch (error) {
+        console.log(error)
         return done(error);
       }
     }

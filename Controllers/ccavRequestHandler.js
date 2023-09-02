@@ -4,8 +4,8 @@ import qs from "querystring";
 
 export const postReq = async function (req, res) {
   var body = "",
-    workingKey = "4B15E8BCD619A91BB671A1A953AC8119", //Put in the 32-Bit key shared by CCAvenues.
-    accessCode = "AVCF77KF59BD18FCDB", //Put in the Access Code shared by CCAvenues.
+    workingKey = "83DF91CC0CCB955ADF79C73933B35506", //Put in the 32-Bit key shared by CCAvenues.
+    accessCode = "AVVH09KI15AB55HVBA", //Put in the Access Code shared by CCAvenues.
     encRequest = "",
     formbody = "";
 
@@ -146,7 +146,7 @@ export const postReq = async function (req, res) {
   
 
   formbody =
-    "https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction" +
+    "https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction" +
     "&encRequest=" +
     encodeURIComponent(encRequest) +
     "&access_code=" +

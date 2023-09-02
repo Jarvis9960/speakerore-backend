@@ -8,8 +8,8 @@ export const postStatusApi = async (request, response) => {
     // #####################################
     const orderId = request.query.order_no;
     const referenceNo = request.query.reference_no || "";
-    const access_code = "AVCF77KF59BD18FCDB";
-    const workingKey = "4B15E8BCD619A91BB671A1A953AC8119";
+    const access_code = "AVVH09KI15AB55HVBA";
+    const workingKey = "83DF91CC0CCB955ADF79C73933B35506";
     const params = { order_no: orderId, reference_no: referenceNo };
     console.log(`params log ${params}`);
 
