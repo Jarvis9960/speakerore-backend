@@ -33,7 +33,7 @@ export const postStatusApi = async (request, response) => {
     });
     console.log(`final_data log ${final_data}`);
     const ccavenue_res = await axios.post(
-      `https://apitest.ccavenue.com/apis/servlet/DoWebTrans`,
+      `https://api.ccavenue.com/apis/servlet/DoWebTrans`,
       final_data,
       {
         headers: {
