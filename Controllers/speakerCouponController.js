@@ -174,7 +174,7 @@ export const applyCouponCode = async (req, res) => {
       const checkSubcription = await UserModel.findOne({
         alphaUnqiueId: coupon_codeExists.coupon_code,
       }).populate("subcription");
-
+      console.log(checkSubcription)
       if (checkSubcription.subcription.Active) {
         if (!coupon_codeExists.isActive) {
           return res

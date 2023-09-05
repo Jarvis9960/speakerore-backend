@@ -957,6 +957,7 @@ export const getEventsBySearch = async (req, res) => {
         },
       ],
     };
+
     const queryResult = await speakeroreEventModel.find(query);
 
     const filterByApprove = queryResult.filter((curr) => {
@@ -968,7 +969,15 @@ export const getEventsBySearch = async (req, res) => {
         return curr;
       }
     });
-    const totalCount = filterByApprove.length - 1;
+
+    // Calculate the startIndex and endIndex for slicing the filtered array
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+
+    // Slice the filtered array to apply skip and limit
+    const filteredSlice = filterByApprove.slice(startIndex, endIndex);
+
+    const totalCount = filterByApprove.length;
     const totalPage = Math.ceil(totalCount / limit);
 
     if (filterByApprove.length < 1) {
@@ -980,7 +989,7 @@ export const getEventsBySearch = async (req, res) => {
     return res.status(201).json({
       status: true,
       message: "sucessfully fetched query result",
-      queryResult: filterByApprove,
+      queryResult: filteredSlice,
       totalPage: totalPage,
       currentPage: page,
     });
@@ -1043,7 +1052,15 @@ export const getEventsBySearchforArchived = async (req, res) => {
         return curr;
       }
     });
-    const totalCount = filterByApprove.length - 1;
+
+    // Calculate the startIndex and endIndex for slicing the filtered array
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+
+    // Slice the filtered array to apply skip and limit
+    const filteredSlice = filterByApprove.slice(startIndex, endIndex);
+
+    const totalCount = filterByApprove.length;
     const totalPage = Math.ceil(totalCount / limit);
 
     if (filterByApprove.length < 1) {
@@ -1055,7 +1072,7 @@ export const getEventsBySearchforArchived = async (req, res) => {
     return res.status(201).json({
       status: true,
       message: "sucessfully fetched query result for archived events",
-      queryResult: filterByApprove,
+      queryResult: filteredSlice,
       totalPage: totalPage,
       currentPage: page,
     });
@@ -1117,7 +1134,15 @@ export const getEventsBySearchforTrash = async (req, res) => {
         return curr;
       }
     });
-    const totalCount = filterByApprove.length - 1;
+
+    // Calculate the startIndex and endIndex for slicing the filtered array
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+
+    // Slice the filtered array to apply skip and limit
+    const filteredSlice = filterByApprove.slice(startIndex, endIndex);
+
+    const totalCount = filterByApprove.length;
     const totalPage = Math.ceil(totalCount / limit);
 
     if (filterByApprove.length < 1) {
@@ -1129,7 +1154,7 @@ export const getEventsBySearchforTrash = async (req, res) => {
     return res.status(201).json({
       status: true,
       message: "sucessfully fetched query result for trash events",
-      queryResult: filterByApprove,
+      queryResult: filteredSlice,
       totalPage: totalPage,
       currentPage: page,
     });
@@ -1189,7 +1214,15 @@ export const getEventsBySearchforCurrentUser = async (req, res) => {
         return curr;
       }
     });
-    const totalCount = filterByApprove.length - 1;
+
+    // Calculate the startIndex and endIndex for slicing the filtered array
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+
+    // Slice the filtered array to apply skip and limit
+    const filteredSlice = filterByApprove.slice(startIndex, endIndex);
+
+    const totalCount = filterByApprove.length;
     const totalPage = Math.ceil(totalCount / limit);
 
     if (filterByApprove.length < 1) {
@@ -1201,7 +1234,7 @@ export const getEventsBySearchforCurrentUser = async (req, res) => {
     return res.status(201).json({
       status: true,
       message: "sucessfully fetched query result for current user events",
-      queryResult: filterByApprove,
+      queryResult: filteredSlice,
       totalPage: totalPage,
       currentPage: page,
     });
@@ -1223,8 +1256,8 @@ export const getDataOfEvent = async (req, res) => {
       });
     }
 
-    const newStartDate = moment(startDate).startOf('day');
-    const newEndDate = moment(endDate).endOf('day');
+    const newStartDate = moment(startDate).startOf("day");
+    const newEndDate = moment(endDate).endOf("day");
 
     const savedData = await speakeroreEventModel.find({
       createdAt: {
@@ -1248,4 +1281,3 @@ export const getDataOfEvent = async (req, res) => {
       .json({ status: false, message: "something went wrong", err: error });
   }
 };
-
