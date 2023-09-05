@@ -174,29 +174,26 @@ export const applyCouponCode = async (req, res) => {
       const checkSubcription = await UserModel.findOne({
         alphaUnqiueId: coupon_codeExists.coupon_code,
       }).populate("subcription");
-      console.log(checkSubcription)
-      if (checkSubcription.subcription.Active) {
-        if (!coupon_codeExists.isActive) {
-          return res
-            .status(422)
-            .json({ status: false, message: "Coupon code is not active" });
-        }
 
-        // Discount amount = Original price × (Discount percentage / 100)
-        let calculateDiscountAmount =
-          amount * (coupon_codeExists.discount / 100);
-
-        // Final price = Original price - Discount amount = $100 - $20 = $80
-        let finalPrice = amount - calculateDiscountAmount;
-
-        return res.status(201).json({
-          status: false,
-          message: "successfully done coupon validation",
-          finalPrice: finalPrice,
-          discount: coupon_codeExists.discount,
-          code: coupon_codeExists.coupon_code,
-        });
+      if (!coupon_codeExists.isActive) {
+        return res
+          .status(422)
+          .json({ status: false, message: "Coupon code is not active" });
       }
+
+      // Discount amount = Original price × (Discount percentage / 100)
+      let calculateDiscountAmount = amount * (coupon_codeExists.discount / 100);
+
+      // Final price = Original price - Discount amount = $100 - $20 = $80
+      let finalPrice = amount - calculateDiscountAmount;
+
+      return res.status(201).json({
+        status: true,
+        message: "successfully done coupon validation",
+        finalPrice: finalPrice,
+        discount: coupon_codeExists.discount,
+        code: coupon_codeExists.coupon_code,
+      });
     } else {
       if (!coupon_codeExists.subscription_type.includes(subcriptionType)) {
         return res.status(422).json({
@@ -302,8 +299,8 @@ export const getReportOfCoupon = async (req, res) => {
       });
     }
 
-    const newStartDate = moment(startDate).startOf('day');
-    const newEndDate = moment(endDate).endOf('day');
+    const newStartDate = moment(startDate).startOf("day");
+    const newEndDate = moment(endDate).endOf("day");
 
     const savedData = await Coupon.find({
       createdAt: {
