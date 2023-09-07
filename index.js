@@ -267,6 +267,8 @@ passport.use(
           email: profile._json.email,
         });
 
+        console.log(existingUser)
+
         if (existingUser) {
           // If the user already exists, return the user profile
           return done(null, existingUser);
@@ -274,7 +276,8 @@ passport.use(
           const defauldAdmin = "ankitfukte11@gmail.com";
           var defaultUser;
           const responseData = profile._json;
-
+         
+          console.log("response email hai ki nahi " + !responseData.email)
 
           if (!responseData.email) {
             let uniquefirstChar;
@@ -300,6 +303,8 @@ passport.use(
 
             // Save the new user to the database
             const savedUser = await newUser.save();
+
+            console.log("savedUser " + savedUser)
 
             // Return the new user profile
             return done(null, savedUser);
@@ -348,6 +353,8 @@ passport.use(
             };
           }
           const newUser = new UserModel(defaultUser);
+
+          console.log("defaultadmin "  + defauldAdmin)
 
           // Save the new user to the database
           const savedUser = await newUser.save();
