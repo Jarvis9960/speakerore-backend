@@ -44,7 +44,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["https://speakerore.com", "https://www.speakerore.com", "http://localhost:3000", "http://192.168.1.5:3000", "http://192.168.1.2:3000"],
+    origin: [
+      "https://speakerore.com",
+      "https://www.speakerore.com",
+      "http://localhost:3000",
+      "http://192.168.1.5:3000",
+      "http://192.168.1.2:3000",
+    ],
     credentials: true,
   })
 );
@@ -266,14 +272,13 @@ passport.use(
 
         console.log(profile._json.email);
 
-        console.log(profile)
+        let existingUser;
 
-      
-        const existingUser = await UserModel.findOne({
-          email: profile._json.email,
-        });
-
-        console.log("existingUser " + existingUser)
+        if (profile._json.email) {
+          existingUser = await UserModel.findOne({
+            email: profile._json.email,
+          });
+        }
 
         if (existingUser) {
           // If the user already exists, return the user profile
@@ -282,8 +287,8 @@ passport.use(
           const defauldAdmin = "ankitfukte11@gmail.com";
           var defaultUser;
           const responseData = profile._json;
-         
-          console.log("response email hai ki nahi " + !responseData.email)
+
+          console.log("response email hai ki nahi " + !responseData.email);
 
           if (!responseData.email) {
             let uniquefirstChar;
@@ -297,6 +302,7 @@ passport.use(
             if (responseData.last_name) {
               uniqueSecChar = responseData.last_name.charAt(0) || "";
             }
+
             defaultUser = {
               alphaUnqiueId: `${uniquefirstChar}${uniqueSecChar}${uniqueNumber}`,
               first_name: responseData.first_name,
@@ -305,15 +311,23 @@ passport.use(
               googleOrFacebookId: responseData.id,
             };
 
-            const newUser = new UserModel(defaultUser);
+            const withoutEmailUserExist = await UserModel.findOne({
+              alphaUnqiueId: defaultUser.alphaUnqiueId,
+            });
 
-            // Save the new user to the database
-            const savedUser = await newUser.save();
+            if (withoutEmailUserExist) {
+              return done(null, withoutEmailUserExist);
+            } else {
+              const newUser = new UserModel(defaultUser);
 
-            console.log("savedUser " + savedUser)
+              // Save the new user to the database
+              const savedUser = await newUser.save();
 
-            // Return the new user profile
-            return done(null, savedUser);
+              console.log("savedUser " + savedUser);
+
+              // Return the new user profile
+              return done(null, savedUser);
+            }
           }
 
           if (responseData.email === defauldAdmin) {
@@ -360,7 +374,7 @@ passport.use(
           }
           const newUser = new UserModel(defaultUser);
 
-          console.log("defaultadmin "  + defauldAdmin)
+          console.log("defaultadmin " + defauldAdmin);
 
           // Save the new user to the database
           const savedUser = await newUser.save();
@@ -369,7 +383,7 @@ passport.use(
           return done(null, savedUser);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
         return done(error);
       }
     }
@@ -660,10 +674,10 @@ app.get("/api/paymentform", async function (req, res) {
         Subcription_Type: merchant_param1,
         Active: false,
         order_id: order_id,
-        amount: amount
+        amount: amount,
       });
 
-      const savedResponse = await saveOrderId.save()
+      const savedResponse = await saveOrderId.save();
 
       if (savedResponse) {
         console.log("Order id is saved to database");
