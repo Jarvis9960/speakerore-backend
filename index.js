@@ -271,6 +271,8 @@ passport.use(
       try {
         console.log(profile._json.email);
 
+        let existingUser;
+
         if (profile._json.email) {
           existingUser = await UserModel.findOne({
             email: profile._json.email,
@@ -313,8 +315,10 @@ passport.use(
             });
 
             if (withoutEmailUserExist) {
+              console.log("withoutemail not reenter database")
               return done(null, withoutEmailUserExist);
             } else {
+              console.log("email is registered in database")
               const newUser = new UserModel(defaultUser);
 
               // Save the new user to the database
