@@ -263,7 +263,11 @@ passport.use(
       // Handle the authenticated user's profile
       // You can save or retrieve user data from your database here
       try {
+
         console.log(profile._json.email);
+
+        console.log(profile)
+
       
         const existingUser = await UserModel.findOne({
           email: profile._json.email,
