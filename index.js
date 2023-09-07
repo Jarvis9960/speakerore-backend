@@ -316,8 +316,10 @@ passport.use(
             });
 
             if (withoutEmailUserExist) {
+              console.log("withoutemail not reenter database")
               return done(null, withoutEmailUserExist);
             } else {
+              console.log("email is registered in database")
               const newUser = new UserModel(defaultUser);
 
               // Save the new user to the database
