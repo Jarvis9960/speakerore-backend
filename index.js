@@ -269,6 +269,7 @@ passport.use(
       // Handle the authenticated user's profile
       // You can save or retrieve user data from your database here
       try {
+
         let existingUser;
 
         if (profile._json.email) {
