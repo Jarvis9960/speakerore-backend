@@ -269,8 +269,6 @@ passport.use(
       // Handle the authenticated user's profile
       // You can save or retrieve user data from your database here
       try {
-        console.log(profile._json.email);
-
         let existingUser;
 
         if (profile._json.email) {
@@ -286,8 +284,6 @@ passport.use(
           const defauldAdmin = "ankitfukte11@gmail.com";
           var defaultUser;
           const responseData = profile._json;
-
-          console.log("response email hai ki nahi " + !responseData.email);
 
           if (!responseData.email) {
             let uniquefirstChar;
@@ -315,16 +311,12 @@ passport.use(
             });
 
             if (withoutEmailUserExist) {
-              console.log("withoutemail not reenter database")
               return done(null, withoutEmailUserExist);
             } else {
-              console.log("email is registered in database")
               const newUser = new UserModel(defaultUser);
 
               // Save the new user to the database
               const savedUser = await newUser.save();
-
-              console.log("savedUser " + savedUser);
 
               // Return the new user profile
               return done(null, savedUser);
