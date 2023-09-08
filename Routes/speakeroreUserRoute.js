@@ -55,6 +55,6 @@ router.get("/getadminbysearch", protectedRouteOfAdmin, getAdminBySearch);
 router.get("/getprofile", protectedRoute, getProfileForCurrentUser);
 
 // updating if facebook email doesn't exist
-router.patch("/updateemail", protectedRoute, updateEmail);
+router.put("/updateemail", protectedRoute, updateEmail);
 
 export default router;
