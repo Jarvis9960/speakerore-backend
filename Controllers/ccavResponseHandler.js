@@ -308,7 +308,7 @@ export const postRes = async function (req, res) {
     // Calculate the start and end dates for different subscription durations
     if (data.merchant_param1 === "Quaterly") {
       endDate.setMonth(startDate.getMonth() + 3);
-    } else if (data.merchant_param1 === "Half Yearly") {
+    } else if (data.merchant_param1 === "HalfYearly") {
       endDate.setMonth(startDate.getMonth() + 6);
     } else if (data.merchant_param1 === "Yearly") {
       endDate.setMonth(startDate.getMonth() + 12);
