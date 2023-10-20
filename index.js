@@ -29,11 +29,14 @@ import nodemailer from "nodemailer";
 import mongoose from "mongoose";
 import CryptoJS from "crypto-js";
 import subcriptionModel from "./Models/speakeroreSubcription.js";
+import sendGridClient from "@sendgrid/client";
 
 // configure for dotenv file
 dotenv.config({ path: path.resolve("./config.env") });
 
 const app = express();
+
+sendGridClient.setApiKey(process.env.SENDGRIDAPI);
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -241,6 +244,30 @@ passport.use(
             }
           }
 
+          const data = {
+            contacts: [
+              {
+                email: responseData.email,
+              },
+            ],
+          };
+
+          const request = {
+            url: `/v3/marketing/contacts`,
+            method: "PUT",
+            body: data,
+          };
+
+          sendGridClient
+            .request(request)
+            .then(([response, body]) => {
+              console.log(response.statusCode);
+              console.log(response.body);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+
           const newUser = new UserModel(defaultUser);
 
           // Save the new user to the database
@@ -269,7 +296,6 @@ passport.use(
       // Handle the authenticated user's profile
       // You can save or retrieve user data from your database here
       try {
-
         let existingUser;
 
         if (profile._json.email) {
