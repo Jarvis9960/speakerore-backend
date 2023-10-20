@@ -281,7 +281,7 @@ export const getEventsByFilters = async (req, res) => {
     const page = req.query.page || 1;
     const limit = 9;
 
-    if (!mode && !category && !exclusive && !date) {
+    if (!mode && !category && !exclusive && !date && !keyword) {
       return res
         .status(422)
         .json({ status: false, message: "No filter parameters provided" });
@@ -934,33 +934,36 @@ export const getEventsBySearch = async (req, res) => {
         .status(422)
         .json({ status: false, message: "No keyword is provided to query" });
     }
-    const query = {
-      $and: [
-        {
-          $or: [
-            { TitleOfTheEvent: { $regex: keyword, $options: "i" } },
-            { ShortDescriptionOfTheEvent: { $regex: keyword, $options: "i" } },
-            {
-              DetailedDescriptionOfTheEvent: { $regex: keyword, $options: "i" },
-            },
-            { EventWebsiteUrl: { $regex: keyword, $options: "i" } },
-            { Mode: { $regex: keyword, $options: "i" } },
-            { EngagementTerm: { $regex: keyword, $options: "i" } },
-            { EventType: { $regex: keyword, $options: "i" } },
-            { AudienceType: { $regex: keyword, $options: "i" } },
-            { Category: { $regex: keyword, $options: "i" } },
-            { Location: { $regex: keyword, $options: "i" } },
-            { City: { $regex: keyword, $options: "i" } },
-            { Country: { $regex: keyword, $options: "i" } },
-            { OrganizerName: { $regex: keyword, $options: "i" } },
-            { OrganizerEmail: { $regex: keyword, $options: "i" } },
-            { Tags: { $in: [keyword] } }, // Match keyword in Tags
-          ],
-        },
-      ],
-    };
 
-    const queryResult = await speakeroreEventModel.find(query);
+    const searchTerms = keyword.split(" ");
+
+    const queryResult = await speakeroreEventModel.find({
+      $or: searchTerms.map((term) => ({
+        $or: [
+          { TitleOfTheEvent: { $regex: new RegExp(term, "i") } },
+          {
+            ShortDescriptionOfTheEvent: { $regex: new RegExp(term, "i") },
+          },
+          {
+            DetailedDescriptionOfTheEvent: {
+              $regex: new RegExp(term, "i"),
+            },
+          },
+          { EventWebsiteUrl: { $regex: new RegExp(term, "i") } },
+          { Mode: { $regex: new RegExp(term, "i") } },
+          { EngagementTerm: { $regex: new RegExp(term, "i") } },
+          { EventType: { $regex: new RegExp(term, "i") } },
+          { AudienceType: { $regex: new RegExp(term, "i") } },
+          { Category: { $regex: new RegExp(term, "i") } },
+          { Location: { $regex: new RegExp(term, "i") } },
+          { City: { $regex: new RegExp(term, "i") } },
+          { Country: { $regex: new RegExp(term, "i") } },
+          { OrganizerName: { $regex: new RegExp(term, "i") } },
+          { OrganizerEmail: { $regex: new RegExp(term, "i") } },
+          { Tags: { $in: [new RegExp(term, "i")] } },
+        ],
+      })),
+    });
 
     const filterByApprove = queryResult.filter((curr) => {
       if (
