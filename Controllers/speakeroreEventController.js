@@ -20,6 +20,7 @@ export const createSpeakeroreEvent = async (req, res) => {
       shortDescriptionOfTheEvent,
       detailedDescriptionOfTheEvent,
       eventWebsiteUrl,
+      contactEmail,
       mode,
       engageMentTerm,
       eventType,
@@ -100,6 +101,7 @@ export const createSpeakeroreEvent = async (req, res) => {
       ShortDescriptionOfTheEvent: shortDescriptionOfTheEvent,
       DetailedDescriptionOfTheEvent: detailedDescriptionOfTheEvent,
       EventWebsiteUrl: eventWebsiteUrl,
+      ContactEmail: contactEmail,
       Mode: mode,
       EngagementTerm: engageMentTerm,
       EventType: eventType,
@@ -1278,6 +1280,109 @@ export const getDataOfEvent = async (req, res) => {
   } catch (error) {
     return res
       .status(422)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const updateEventByAdmin = async (req, res) => {
+  try {
+    const { eventId } = req.query;
+    const {
+      titleOfTheEvent,
+      shortDescriptionOfTheEvent,
+      detailedDescriptionOfTheEvent,
+      eventWebsiteUrl,
+      contactEmail,
+      mode,
+      engageMentTerm,
+      eventType,
+      audienceType,
+      audienceSize,
+      category,
+      eventStartDate,
+      eventEndDate,
+      eventStartTime,
+      eventEndTime,
+      location,
+      city,
+      pincode,
+      country,
+      organizerName,
+      organizerEmail,
+      organizerContactNumber,
+      tags,
+      isSpeakeroreExclusive,
+    } = req.body;
+
+    if (!eventId) {
+      return res.status(422).json({
+        status: false,
+        message: "Please provide event id to update event",
+      });
+    }
+
+    const eventStartDateAndTimeObject = new Date(eventStartDate.split("T")[0]);
+    const eventEndDateAndTimeObject = new Date(eventEndDate.split("T")[0]);
+    const [startHours, startMinutes] = eventStartTime.split(":");
+    const [endHours, endMinutes] = eventEndTime.split(":");
+
+    eventStartDateAndTimeObject.setUTCHours(
+      parseInt(startHours, 10),
+      parseInt(startMinutes, 10)
+    );
+    eventEndDateAndTimeObject.setUTCHours(
+      parseInt(endHours, 10),
+      parseInt(endMinutes, 10)
+    );
+
+    if (
+      isNaN(eventStartDateAndTimeObject.getTime()) ||
+      isNaN(eventEndDateAndTimeObject.getTime())
+    ) {
+      return res
+        .status(422)
+        .json({ status: false, message: "Event Dates is Invalid" });
+    }
+
+    const updateEvent = await speakeroreEventModel.updateOne(
+      { _id: eventId },
+      {
+        $set: {
+          TitleOfTheEvent: titleOfTheEvent,
+          ShortDescriptionOfTheEvent: shortDescriptionOfTheEvent,
+          DetailedDescriptionOfTheEvent: detailedDescriptionOfTheEvent,
+          EventWebsiteUrl: eventWebsiteUrl,
+          ContactEmail: contactEmail,
+          Mode: mode,
+          EngagementTerm: engageMentTerm,
+          EventType: eventType,
+          AudienceType: audienceType,
+          AudienceSize: audienceSize,
+          Category: category,
+          EventStartDateAndTime: eventStartDateAndTimeObject,
+          EventEndDateAndTime: eventEndDateAndTimeObject,
+          Location: location,
+          City: city,
+          Pincode: pincode,
+          Country: country,
+          OrganizerName: organizerName,
+          OrganizerEmail: organizerEmail,
+          OrganizerContactNumber: organizerContactNumber,
+          isSpeakerOreExclusive: isSpeakeroreExclusive,
+          Tags: tags,
+        },
+      }
+    );
+
+    if (updateEvent.acknowledged) {
+      return res
+        .status(201)
+        .json({ status: true, message: "event has been successfully updated" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
       .json({ status: false, message: "something went wrong", err: error });
   }
 };

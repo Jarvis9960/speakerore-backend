@@ -23,6 +23,7 @@ import {
   getEventsBySearchforTrash,
   getEventsBySearchforCurrentUser,
   getDataOfEvent,
+  updateEventByAdmin,
 } from "../Controllers/speakeroreEventController.js";
 import {
   protectedRoute,
@@ -115,5 +116,9 @@ router.get(
   protectedRouteOfTeamMember,
   getEventsBySearchforArchived
 );
+
+
+//update event by admin 
+router.patch("/updateevent", protectedRouteOfAdmin, updateEventByAdmin);
 
 export default router;
