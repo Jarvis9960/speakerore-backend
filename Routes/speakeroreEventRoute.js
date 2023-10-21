@@ -24,6 +24,7 @@ import {
   getEventsBySearchforCurrentUser,
   getDataOfEvent,
   updateEventByAdmin,
+  flagEvent,
 } from "../Controllers/speakeroreEventController.js";
 import {
   protectedRoute,
@@ -76,8 +77,8 @@ router.get(
 router.get("/geteventforcurrentuser", protectedRoute, getEventUserHasPublished);
 router.get(
   "/geteventbyquery",
-  // protectedRoute,
-  // checkSubcription,
+  protectedRoute,
+  checkSubcription,
   getEventsBySearch
 );
 router.get(
@@ -85,6 +86,10 @@ router.get(
   protectedRoute,
   getEventsBySearchforCurrentUser
 );
+
+
+//Flag event
+router.patch("/flagevent", protectedRoute, flagEvent)
 
 // getting all events for admin and modify
 router.patch("/makeeventapprove", protectedRouteOfAdmin, makeEventApproved);
@@ -100,7 +105,7 @@ router.patch("/revivefortrash", protectedRouteOfAdmin, reviveEvent);
 router.delete("/deleteevent", protectedRouteOfAdmin, permanentDeleteEvent);
 router.get(
   "/geteventbyqueryfortrash",
-  // protectedRouteOfAdmin,
+  protectedRouteOfAdmin,
   getEventsBySearchforTrash
 );
 router.get("/getreportofevent", protectedRouteOfAdmin, getDataOfEvent);
