@@ -1242,7 +1242,7 @@ export const getDataOfEvent = async (req, res) => {
         $gte: newStartDate.toDate(),
         $lte: newEndDate.toDate(),
       },
-    });
+    }).populate("Flag.User");
 
     if (savedData.length < 1) {
       return res
@@ -1354,6 +1354,40 @@ export const updateEventByAdmin = async (req, res) => {
       return res
         .status(201)
         .json({ status: true, message: "event has been successfully updated" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ status: false, message: "something went wrong", err: error });
+  }
+};
+
+export const flagEvent = async (req, res) => {
+  try {
+    const { eventId } = req.body;
+
+    if (!eventId) {
+      return res.status(422).json({
+        status: false,
+        message: "Please provide event id to flag or report",
+      });
+    }
+
+    const flagResponse = await speakeroreEventModel.updateOne(
+      { _id: eventId },
+      {
+        $set: {
+          isApprove: false,
+          Flag: { isFlagged: true, User: req.user._id },
+        },
+      }
+    );
+
+    if (flagResponse.acknowledged) {
+      return res
+        .status(201)
+        .json({ status: true, message: "Event has been flagged." });
     }
   } catch (error) {
     console.log(error);

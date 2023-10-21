@@ -130,6 +130,13 @@ const speakeroreEventSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    Flag: {
+      isFlagged: { type: Boolean, default: false },
+      User: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      },
+    },
   },
   {
     timestamps: true,
