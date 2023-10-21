@@ -922,7 +922,6 @@ export const permanentDeleteEvent = async (req, res) => {
 };
 
 // get event by search field
-
 export const getEventsBySearch = async (req, res) => {
   try {
     const { keyword } = req.query;
@@ -935,80 +934,28 @@ export const getEventsBySearch = async (req, res) => {
         .json({ status: false, message: "No keyword is provided to query" });
     }
 
+    const searchTerms = keyword.split(" ");
+
     const query = {
-      $and: [
-        {
-          $or: [
-            {
-              TitleOfTheEvent: {
-                $regex: new RegExp(keyword.split(" ").join(".*"), "i"),
-              },
-            },
-            {
-              ShortDescriptionOfTheEvent: {
-                $regex: new RegExp(keyword.split(" ").join(".*"), "i"),
-              },
-            },
-            {
-              DetailedDescriptionOfTheEvent: {
-                $regex: new RegExp(keyword.split(" ").join(".*"), "i"),
-              },
-            },
-            {
-              EventWebsiteUrl: {
-                $regex: new RegExp(keyword.split(" ").join(".*"), "i"),
-              },
-            },
-            {
-              Mode: { $regex: new RegExp(keyword.split(" ").join(".*"), "i") },
-            },
-            {
-              EngagementTerm: {
-                $regex: new RegExp(keyword.split(" ").join(".*"), "i"),
-              },
-            },
-            {
-              EventType: {
-                $regex: new RegExp(keyword.split(" ").join(".*"), "i"),
-              },
-            },
-            {
-              AudienceType: {
-                $regex: new RegExp(keyword.split(" ").join(".*"), "i"),
-              },
-            },
-            {
-              Category: {
-                $regex: new RegExp(keyword.split(" ").join(".*"), "i"),
-              },
-            },
-            {
-              Location: {
-                $regex: new RegExp(keyword.split(" ").join(".*"), "i"),
-              },
-            },
-            {
-              City: { $regex: new RegExp(keyword.split(" ").join(".*"), "i") },
-            },
-            {
-              Country: {
-                $regex: new RegExp(keyword.split(" ").join(".*"), "i"),
-              },
-            },
-            {
-              OrganizerName: {
-                $regex: new RegExp(keyword.split(" ").join(".*"), "i"),
-              },
-            },
-            {
-              OrganizerEmail: {
-                $regex: new RegExp(keyword.split(" ").join(".*"), "i"),
-              },
-            },
-            { Tags: { $in: [new RegExp(keyword.split(" ").join(".*"), "i")] } },
-          ],
-        },
-      ],
+      $and: searchTerms.map((term) => ({
+        $or: [
+          { TitleOfTheEvent: { $regex: new RegExp(term, "i") } },
+          { ShortDescriptionOfTheEvent: { $regex: new RegExp(term, "i") } },
+          { DetailedDescriptionOfTheEvent: { $regex: new RegExp(term, "i") } },
+          { EventWebsiteUrl: { $regex: new RegExp(term, "i") } },
+          { Mode: { $regex: new RegExp(term, "i") } },
+          { EngagementTerm: { $regex: new RegExp(term, "i") } },
+          { EventType: { $regex: new RegExp(term, "i") } },
+          { AudienceType: { $regex: new RegExp(term, "i") } },
+          { Category: { $regex: new RegExp(term, "i") } },
+          { Location: { $regex: new RegExp(term, "i") } },
+          { City: { $regex: new RegExp(term, "i") } },
+          { Country: { $regex: new RegExp(term, "i") } },
+          { OrganizerName: { $regex: new RegExp(term, "i") } },
+          { OrganizerEmail: { $regex: new RegExp(term, "i") } },
+          { Tags: { $regex: new RegExp(term, "i") } },
+        ],
+      })),
     };
 
     const queryResult = await speakeroreEventModel.find(query);
@@ -1066,36 +1013,28 @@ export const getEventsBySearchforArchived = async (req, res) => {
         .json({ status: false, message: "No keyword is provided to query" });
     }
 
+    const searchTerms = keyword.split(" ");
+
     const query = {
-      $and: [
-        {
-          $or: [
-            { TitleOfTheEvent: { $regex: new RegExp(keyword, "i") } },
-            {
-              ShortDescriptionOfTheEvent: {
-                $regex: new RegExp(keyword, "i"),
-              },
-            },
-            {
-              DetailedDescriptionOfTheEvent: {
-                $regex: new RegExp(keyword, "i"),
-              },
-            },
-            { EventWebsiteUrl: { $regex: new RegExp(keyword, "i") } },
-            { Mode: { $regex: new RegExp(keyword, "i") } },
-            { EngagementTerm: { $regex: new RegExp(keyword, "i") } },
-            { EventType: { $regex: new RegExp(keyword, "i") } },
-            { AudienceType: { $regex: new RegExp(keyword, "i") } },
-            { Category: { $regex: new RegExp(keyword, "i") } },
-            { Location: { $regex: new RegExp(keyword, "i") } },
-            { City: { $regex: new RegExp(keyword, "i") } },
-            { Country: { $regex: new RegExp(keyword, "i") } },
-            { OrganizerName: { $regex: new RegExp(keyword, "i") } },
-            { OrganizerEmail: { $regex: new RegExp(keyword, "i") } },
-            { Tags: { $in: [new RegExp(keyword, "i")] } },
-          ],
-        },
-      ],
+      $and: searchTerms.map((term) => ({
+        $or: [
+          { TitleOfTheEvent: { $regex: new RegExp(term, "i") } },
+          { ShortDescriptionOfTheEvent: { $regex: new RegExp(term, "i") } },
+          { DetailedDescriptionOfTheEvent: { $regex: new RegExp(term, "i") } },
+          { EventWebsiteUrl: { $regex: new RegExp(term, "i") } },
+          { Mode: { $regex: new RegExp(term, "i") } },
+          { EngagementTerm: { $regex: new RegExp(term, "i") } },
+          { EventType: { $regex: new RegExp(term, "i") } },
+          { AudienceType: { $regex: new RegExp(term, "i") } },
+          { Category: { $regex: new RegExp(term, "i") } },
+          { Location: { $regex: new RegExp(term, "i") } },
+          { City: { $regex: new RegExp(term, "i") } },
+          { Country: { $regex: new RegExp(term, "i") } },
+          { OrganizerName: { $regex: new RegExp(term, "i") } },
+          { OrganizerEmail: { $regex: new RegExp(term, "i") } },
+          { Tags: { $regex: new RegExp(term, "i") } },
+        ],
+      })),
     };
 
     const queryResult = await speakeroreEventModel.find(query);
@@ -1148,36 +1087,28 @@ export const getEventsBySearchforTrash = async (req, res) => {
         .json({ status: false, message: "No keyword is provided to query" });
     }
 
+    const searchTerms = keyword.split(" ");
+
     const query = {
-      $and: [
-        {
-          $or: [
-            { TitleOfTheEvent: { $regex: new RegExp(keyword, "i") } },
-            {
-              ShortDescriptionOfTheEvent: {
-                $regex: new RegExp(keyword, "i"),
-              },
-            },
-            {
-              DetailedDescriptionOfTheEvent: {
-                $regex: new RegExp(keyword, "i"),
-              },
-            },
-            { EventWebsiteUrl: { $regex: new RegExp(keyword, "i") } },
-            { Mode: { $regex: new RegExp(keyword, "i") } },
-            { EngagementTerm: { $regex: new RegExp(keyword, "i") } },
-            { EventType: { $regex: new RegExp(keyword, "i") } },
-            { AudienceType: { $regex: new RegExp(keyword, "i") } },
-            { Category: { $regex: new RegExp(keyword, "i") } },
-            { Location: { $regex: new RegExp(keyword, "i") } },
-            { City: { $regex: new RegExp(keyword, "i") } },
-            { Country: { $regex: new RegExp(keyword, "i") } },
-            { OrganizerName: { $regex: new RegExp(keyword, "i") } },
-            { OrganizerEmail: { $regex: new RegExp(keyword, "i") } },
-            { Tags: { $in: [new RegExp(keyword, "i")] } },
-          ],
-        },
-      ],
+      $and: searchTerms.map((term) => ({
+        $or: [
+          { TitleOfTheEvent: { $regex: new RegExp(term, "i") } },
+          { ShortDescriptionOfTheEvent: { $regex: new RegExp(term, "i") } },
+          { DetailedDescriptionOfTheEvent: { $regex: new RegExp(term, "i") } },
+          { EventWebsiteUrl: { $regex: new RegExp(term, "i") } },
+          { Mode: { $regex: new RegExp(term, "i") } },
+          { EngagementTerm: { $regex: new RegExp(term, "i") } },
+          { EventType: { $regex: new RegExp(term, "i") } },
+          { AudienceType: { $regex: new RegExp(term, "i") } },
+          { Category: { $regex: new RegExp(term, "i") } },
+          { Location: { $regex: new RegExp(term, "i") } },
+          { City: { $regex: new RegExp(term, "i") } },
+          { Country: { $regex: new RegExp(term, "i") } },
+          { OrganizerName: { $regex: new RegExp(term, "i") } },
+          { OrganizerEmail: { $regex: new RegExp(term, "i") } },
+          { Tags: { $regex: new RegExp(term, "i") } },
+        ],
+      })),
     };
 
     const queryResult = await speakeroreEventModel.find(query);
@@ -1230,34 +1161,28 @@ export const getEventsBySearchforCurrentUser = async (req, res) => {
         .json({ status: false, message: "No keyword is provided to query" });
     }
 
+    const searchTerms = keyword.split(" ");
+
     const query = {
-      $and: [
-        {
-          $or: [
-            { TitleOfTheEvent: { $regex: new RegExp(keyword, "i") } },
-            {
-              ShortDescriptionOfTheEvent: { $regex: new RegExp(keyword, "i") },
-            },
-            {
-              DetailedDescriptionOfTheEvent: {
-                $regex: new RegExp(keyword, "i"),
-              },
-            },
-            { EventWebsiteUrl: { $regex: new RegExp(keyword, "i") } },
-            { Mode: { $regex: new RegExp(keyword, "i") } },
-            { EngagementTerm: { $regex: new RegExp(keyword, "i") } },
-            { EventType: { $regex: new RegExp(keyword, "i") } },
-            { AudienceType: { $regex: new RegExp(keyword, "i") } },
-            { Category: { $regex: new RegExp(keyword, "i") } },
-            { Location: { $regex: new RegExp(keyword, "i") } },
-            { City: { $regex: new RegExp(keyword, "i") } },
-            { Country: { $regex: new RegExp(keyword, "i") } },
-            { OrganizerName: { $regex: new RegExp(keyword, "i") } },
-            { OrganizerEmail: { $regex: new RegExp(keyword, "i") } },
-            { Tags: { $in: [new RegExp(keyword, "i")] } },
-          ],
-        },
-      ],
+      $and: searchTerms.map((term) => ({
+        $or: [
+          { TitleOfTheEvent: { $regex: new RegExp(term, "i") } },
+          { ShortDescriptionOfTheEvent: { $regex: new RegExp(term, "i") } },
+          { DetailedDescriptionOfTheEvent: { $regex: new RegExp(term, "i") } },
+          { EventWebsiteUrl: { $regex: new RegExp(term, "i") } },
+          { Mode: { $regex: new RegExp(term, "i") } },
+          { EngagementTerm: { $regex: new RegExp(term, "i") } },
+          { EventType: { $regex: new RegExp(term, "i") } },
+          { AudienceType: { $regex: new RegExp(term, "i") } },
+          { Category: { $regex: new RegExp(term, "i") } },
+          { Location: { $regex: new RegExp(term, "i") } },
+          { City: { $regex: new RegExp(term, "i") } },
+          { Country: { $regex: new RegExp(term, "i") } },
+          { OrganizerName: { $regex: new RegExp(term, "i") } },
+          { OrganizerEmail: { $regex: new RegExp(term, "i") } },
+          { Tags: { $regex: new RegExp(term, "i") } },
+        ],
+      })),
     };
 
     const queryResult = await speakeroreEventModel.find(query);
