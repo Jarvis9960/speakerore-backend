@@ -8,7 +8,7 @@ function getAlgorithm(keyBase64) {
     case 32:
       return "aes-256-cbc";
   }
-  throw new Error("Invalid key length: " + key.length);
+  throw new Error("Invalid key lengths: " + key.length);
 }
 
 export const encrypt = function (plainText, keyBase64, ivBase64) {
